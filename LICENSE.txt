@@ -1,0 +1,5 @@
+Copyright (c) 2025 An6not
+
+Permission is hereby granted to anyone to use, copy, modify, and distribute this project and its source code in any form, provided that the original author, An6not, is credited.
+
+This project is provided "as is", without any warranty of any kind.
