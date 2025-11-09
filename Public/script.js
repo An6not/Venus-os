@@ -1,10 +1,61 @@
+const desktop = document.getElementById('desktop');
+const phoneFrame = document.getElementById('phone-frame');
+const appWindow = document.getElementById('app-window');
+const appTitle = document.getElementById('app-title');
+const appContent = document.getElementById('app-content');
+const closeApp = document.getElementById('close-app');
 
-const appIcons = document.querySelectorAll('.app-icon');
+// Настройка приложений
+const apps = [
+    {name: "Calculator", icon: "./Public/venus-os-component/Images/App-icons/Harmony/calculator.png"},
+    {name: "Calendar", icon: "./Public/venus-os-component/Images/App-icons/Harmony/calendar.png"},
+    {name: "Clock", icon: "./Public/venus-os-component/Images/App-icons/Harmony/clock.png"},
+    {name: "Gallery", icon: "./Public/venus-os-component/Images/App-icons/Harmony/gallery.png"},
+];
 
-appIcons.forEach(icon => {
-    icon.addEventListener('click', () => {
-        const appName = icon.dataset.app;
-        alert(`Открытие приложения: ${appName}`);
-        // Здесь позже можно добавить открытие окна приложения
-    });
+// Генерация иконок на рабочем столе
+apps.forEach(app => {
+    const img = document.createElement('img');
+    img.src = app.icon;
+    img.alt = app.name;
+    img.classList.add('app-icon');
+    img.addEventListener('click', () => openApp(app));
+    desktop.appendChild(img);
 });
+
+// Открытие приложения
+function openApp(app) {
+    appTitle.textContent = app.name;
+    appContent.innerHTML = `<p>Это приложение: ${app.name}</p>`;
+    appWindow.classList.remove('hidden');
+}
+
+// Закрытие приложения
+closeApp.addEventListener('click', () => {
+    appWindow.classList.add('hidden');
+});
+
+// Обои (динамически)
+const wallpapers = [
+    "./Public/venus-os-component/Images/wallpaper/1.jpeg",
+    "./Public/venus-os-component/Images/wallpaper/2.jpeg"
+];
+
+let currentWallpaper = 0;
+function changeWallpaper() {
+    phoneFrame.style.backgroundImage = `url(${wallpapers[currentWallpaper]})`;
+    currentWallpaper = (currentWallpaper + 1) % wallpapers.length;
+}
+
+// Установить начальный обои
+changeWallpaper();
+
+// Полоса состояния (время, батарея)
+function updateStatusBar() {
+    const timeEl = document.getElementById('time');
+    const batteryEl = document.getElementById('battery');
+    const now = new Date();
+    timeEl.textContent = now.getHours().toString().padStart(2,'0') + ":" + now.getMinutes().toString().padStart(2,'0');
+    batteryEl.textContent = Math.floor(Math.random()*21 + 80) + "%"; // пример батареи
+}
+setInterval(updateStatusBar, 1000);
