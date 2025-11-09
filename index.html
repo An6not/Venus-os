@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,16 +7,28 @@
     <link rel="stylesheet" href="./Public/style.css">
 </head>
 <body>
-    <div id="desktop">
-        <img src="./Public/venus-os-component/Images/App-icons/Harmony/calculator.png" alt="Calculator" class="app-icon" data-app="calculator">
-        <img src="./Public/venus-os-component/Images/App-icons/Harmony/calendar.png" alt="Calendar" class="app-icon" data-app="calendar">
-        <img src="./Public/venus-os-component/Images/App-icons/Harmony/clock.png" alt="Clock" class="app-icon" data-app="clock">
-        <img src="./Public/venus-os-component/Images/App-icons/Harmony/files.png" alt="Files" class="app-icon" data-app="files">
-        <img src="./Public/venus-os-component/Images/App-icons/Harmony/gallery.png" alt="Gallery" class="app-icon" data-app="gallery">
-        <img src="./Public/venus-os-component/Images/App-icons/Harmony/messages.png" alt="Messages" class="app-icon" data-app="messages">
-        <img src="./Public/venus-os-component/Images/App-icons/Harmony/music.png" alt="Music" class="app-icon" data-app="music">
-        <img src="./Public/venus-os-component/Images/App-icons/Harmony/phone.png" alt="Phone" class="app-icon" data-app="phone">
-        <img src="./Public/venus-os-component/Images/App-icons/Harmony/settings.png" alt="Settings" class="app-icon" data-app="settings">
+    <div id="phone-frame">
+        <!-- Полоса состояния -->
+        <div id="status-bar">
+            <span id="time">12:00</span>
+            <span id="battery">100%</span>
+        </div>
+
+        <!-- Рабочий стол -->
+        <div id="desktop">
+            <!-- Иконки приложений будут добавляться динамически через JS -->
+        </div>
+
+        <!-- Приложение -->
+        <div id="app-window" class="hidden">
+            <div id="app-header">
+                <span id="app-title">App</span>
+                <button id="close-app">X</button>
+            </div>
+            <div id="app-content">
+                <!-- Контент приложения -->
+            </div>
+        </div>
     </div>
 
     <script src="./Public/script.js"></script>
