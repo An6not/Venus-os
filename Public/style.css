@@ -21,7 +21,7 @@ body, html {
 }
 
 /* Полоса состояния */
-#status-bar {
+.status-bar {
     position: absolute;
     top: 0;
     left: 0;
@@ -63,7 +63,7 @@ body, html {
 }
 
 /* Приложение */
-#app-window {
+.app-window {
     position: absolute;
     top: 24px;
     left: 0;
@@ -77,11 +77,11 @@ body, html {
     border-radius: 0;
 }
 
-#app-window.hidden {
+.app-window.hidden {
     display: none;
 }
 
-#app-header {
+.app-header {
     background: #222;
     color: white;
     display: flex;
@@ -90,7 +90,7 @@ body, html {
     padding: 4px 8px;
 }
 
-#app-content {
+.app-content {
     flex: 1;
     background: #fff;
     padding: 8px;
