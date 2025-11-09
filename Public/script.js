@@ -10,7 +10,12 @@ const apps = [
     {name: "Calculator", icon: "./Public/venus-os-component/Images/App-icons/Harmony/calculator.png"},
     {name: "Calendar", icon: "./Public/venus-os-component/Images/App-icons/Harmony/calendar.png"},
     {name: "Clock", icon: "./Public/venus-os-component/Images/App-icons/Harmony/clock.png"},
+    {name: "Files", icon: "./Public/venus-os-component/Images/App-icons/Harmony/files.png"},
     {name: "Gallery", icon: "./Public/venus-os-component/Images/App-icons/Harmony/gallery.png"},
+    {name: "Messages", icon: "./Public/venus-os-component/Images/App-icons/Harmony/messages.png"},
+    {name: "Music", icon: "./Public/venus-os-component/Images/App-icons/Harmony/music.png"},
+    {name: "Phone", icon: "./Public/venus-os-component/Images/App-icons/Harmony/phone.png"},
+    {name: "Settings", icon: "./Public/venus-os-component/Images/App-icons/Harmony/settings.png"},
 ];
 
 // Генерация иконок на рабочем столе
@@ -35,6 +40,28 @@ closeApp.addEventListener('click', () => {
     appWindow.classList.add('hidden');
 });
 
+// Обои (динамически)
+const wallpapers = [
+    "./Public/venus-os-component/Images/Wallpaper/1.jpeg",
+    "./Public/venus-os-component/Images/Wallpaper/2.jpeg"
+];
+
+let currentWallpaper = 0;
+function changeWallpaper() {
+    phoneFrame.style.backgroundImage = `url(${wallpapers[currentWallpaper]})`;
+    currentWallpaper = (currentWallpaper + 1) % wallpapers.length;
+}
+changeWallpaper();
+
+// Полоса состояния (время, батарея)
+function updateStatusBar() {
+    const timeEl = document.getElementById('time');
+    const batteryEl = document.getElementById('battery');
+    const now = new Date();
+    timeEl.textContent = now.getHours().toString().padStart(2,'0') + ":" + now.getMinutes().toString().padStart(2,'0');
+    batteryEl.textContent = Math.floor(Math.random()*21 + 80) + "%"; // пример батареи
+}
+setInterval(updateStatusBar, 1000);
 // Обои (динамически)
 const wallpapers = [
     "./Public/venus-os-component/Images/wallpaper/1.jpeg",
