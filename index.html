@@ -8,7 +8,23 @@
 </head>
 <body>
     <div id="phone-frame">
+        <!-- Полоса состояния -->
+        <div id="status-bar">
+            <span id="time">12:00</span>
+            <span id="battery">100%</span>
+        </div>
+
+        <!-- Рабочий стол -->
         <div id="desktop"></div>
+
+        <!-- Приложение -->
+        <div id="app-window" class="hidden">
+            <div id="app-header">
+                <span id="app-title">App</span>
+                <button id="close-app">X</button>
+            </div>
+            <div id="app-content"></div>
+        </div>
     </div>
 
     <script src="./Public/script.js"></script>
