@@ -14,7 +14,7 @@ Simple operating system simulation project.
 
 ## Запуск
 
-Откройте (https://An6not.github.io/Venus-OS/)
+Откройте (https://An6not.github.io/Venus-os/)
 в любом браузере с интернетом 
 ---
 
