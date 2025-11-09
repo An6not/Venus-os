@@ -2,16 +2,16 @@
 body, html {
     margin: 0;
     padding: 0;
-    background: #111;
+    height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    background: #111;
 }
 
 #phone-frame {
     position: relative;
-    width: 360px;      /* Пропорции телефона */
+    width: 360px;
     height: 740px;
     border: 16px solid #222;
     border-radius: 36px;
@@ -70,11 +70,11 @@ body, html {
     width: 100%;
     height: calc(100% - 24px);
     background: white;
-    border-radius: 0;
     display: flex;
     flex-direction: column;
     overflow: hidden;
     z-index: 10;
+    border-radius: 0;
 }
 
 #app-window.hidden {
