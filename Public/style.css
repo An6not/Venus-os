@@ -1,1 +1,26 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    font-family: sans-serif;
+    background-color: #1e1e1e; /* Можно заменить на обои позже */
+}
 
+#desktop {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 20px;
+}
+
+.app-icon {
+    width: 64px;
+    height: 64px;
+    margin: 15px;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.app-icon:hover {
+    transform: scale(1.1);
+}
