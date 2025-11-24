@@ -1,1 +1,509 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #111;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    color: #fff;
+}
+
+.phone-container {
+    width: 390px;
+    height: 844px;
+    background: #111;
+    border-radius: 50px;
+    padding: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    position: relative;
+    overflow: hidden;
+}
+
+.phone-screen {
+    width: 100%;
+    height: 100%;
+    background: #000;
+    border-radius: 40px;
+    overflow: hidden;
+    position: relative;
+}
+
+.screen {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.hidden {
+    display: none;
+}
+
+/* Динамический островок */
+.dynamic-island {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 130px;
+    height: 40px;
+    background: #000;
+    border-radius: 25px;
+    z-index: 100;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.dynamic-island.expanded {
+    width: 200px;
+    height: 50px;
+}
+
+/* Загрузочный экран */
+.boot-screen {
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.boot-logo {
+    text-align: center;
+}
+
+.logo-spinner {
+    width: 80px;
+    height: 80px;
+    border: 5px solid rgba(255, 255, 255, 0.3);
+    border-top: 5px solid #fff;
+    border-radius: 50%;
+    margin: 0 auto 20px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.boot-logo h1 {
+    font-size: 24px;
+    font-weight: 300;
+}
+
+/* Экран настройки */
+.setup-screen {
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.setup-content {
+    text-align: center;
+    padding: 20px;
+}
+
+.setup-content h1 {
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+.setup-content p {
+    margin-bottom: 30px;
+    opacity: 0.8;
+}
+
+.btn-primary {
+    background: #4a6cf7;
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 25px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.btn-primary:hover {
+    background: #3a5ce5;
+}
+
+/* Рабочий стол */
+.desktop {
+    display: flex;
+    flex-direction: column;
+}
+
+.wallpaper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('./public/images/wallpapers/Xiaomi-15-Pro-Wallpaper-7.webp') center/cover;
+    z-index: -1;
+}
+
+.app-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    padding: 80px 20px 100px;
+    flex: 1;
+    align-content: start;
+}
+
+.app-icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.app-icon:hover {
+    transform: scale(1.05);
+}
+
+.icon-wrapper {
+    width: 72px;
+    height: 72px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.app-icon img {
+    width: 60px;
+    height: 60px;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.app-icon span {
+    font-size: 13px;
+    text-align: center;
+    color: white;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
+    font-weight: 500;
+}
+
+.dock {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(20px);
+    border-radius: 30px;
+    padding: 10px;
+    display: flex;
+    justify-content: space-around;
+}
+
+.dock-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.dock-icon:hover {
+    transform: scale(1.1);
+}
+
+.dock-icon img {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+}
+
+/* Окно приложения */
+.app-window {
+    background: white;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    border-radius: 40px;
+    transform: scale(0.9);
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.app-window.open {
+    transform: scale(1);
+    opacity: 1;
+}
+
+.app-header {
+    display: flex;
+    align-items: center;
+    padding: 60px 15px 15px;
+    background: #f5f5f5;
+    border-bottom: 1px solid #e0e0e0;
+    border-radius: 40px 40px 0 0;
+}
+
+.back-btn {
+    background: none;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    margin-right: 15px;
+    padding: 8px;
+    border-radius: 50%;
+    transition: background 0.2s;
+}
+
+.back-btn:hover {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.app-title {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.app-content {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    border-radius: 0 0 40px 40px;
+}
+
+/* Контент приложений */
+.app-phone, .app-messages, .app-music, .app-gallery, 
+.app-calculator, .app-calendar, .app-clock, .app-compass, 
+.app-files, .app-settings {
+    height: 100%;
+}
+
+.app-phone h3, .app-messages h3, .app-music h3, 
+.app-gallery h3, .app-calculator h3, .app-calendar h3, 
+.app-clock h3, .app-compass h3, .app-files h3, 
+.app-settings h3 {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.dialer-buttons {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.dialer-buttons button {
+    padding: 15px;
+    font-size: 20px;
+    border: none;
+    background: #f0f0f0;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.dialer-buttons button:hover {
+    background: #e0e0e0;
+}
+
+.call-btn {
+    width: 100%;
+    padding: 15px;
+    margin-top: 20px;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 30px;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.conversation {
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+}
+
+.conversation:hover {
+    background: #f9f9f9;
+}
+
+.contact {
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.preview {
+    color: #666;
+    font-size: 14px;
+}
+
+.now-playing {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.album-cover {
+    width: 200px;
+    height: 200px;
+    background: #ddd;
+    border-radius: 10px;
+    margin: 0 auto 20px;
+}
+
+.controls {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.controls button {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 50%;
+    transition: background 0.2s;
+}
+
+.controls button:hover {
+    background: #f0f0f0;
+}
+
+.photo-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.photo {
+    aspect-ratio: 1;
+    background: #ddd;
+    border-radius: 10px;
+}
+
+.calculator-display {
+    background: #000;
+    color: white;
+    padding: 20px;
+    text-align: right;
+    font-size: 24px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.calculator-buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+.calculator-buttons button {
+    padding: 15px;
+    font-size: 18px;
+    border: none;
+    background: #f0f0f0;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.calculator-buttons button:hover {
+    background: #e0e0e0;
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+    margin-top: 15px;
+}
+
+.day {
+    text-align: center;
+    padding: 10px;
+    font-weight: 600;
+}
+
+.clock-display {
+    font-size: 48px;
+    text-align: center;
+    margin: 30px 0;
+    font-weight: 300;
+}
+
+.world-clock {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.compass-circle {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    border: 2px solid #333;
+    margin: 30px auto;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.compass-needle {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.compass-direction {
+    text-align: center;
+    font-size: 18px;
+}
+
+.file-item {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+}
+
+.file-item:hover {
+    background: #f9f9f9;
+}
+
+.file-icon {
+    font-size: 24px;
+    margin-right: 15px;
+}
+
+.setting-item {
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+}
+
+.setting-item:hover {
+    background: #f9f9f9;
+  }
