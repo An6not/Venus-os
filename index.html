@@ -1,32 +1,133 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Venus-OS</title>
-  <link rel="stylesheet" href="./Public/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MobileOS Simulator</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div id="phone-frame">
-    <!-- Полоса состояния -->
-    <div id="status-bar">
-      <span id="time">12:00</span>
-      <span id="battery">100%</span>
+    <div class="phone-container">
+        <div class="phone-screen">
+            <!-- Динамический островок -->
+            <div class="dynamic-island" id="dynamicIsland">
+                <span id="islandText">12:30</span>
+            </div>
+
+            <!-- Загрузочный экран -->
+            <div id="boot-screen" class="screen boot-screen">
+                <div class="boot-logo">
+                    <div class="logo-spinner"></div>
+                    <h1>MobileOS</h1>
+                </div>
+            </div>
+
+            <!-- Экран настройки -->
+            <div id="setup-screen" class="screen setup-screen hidden">
+                <div class="setup-content">
+                    <h1>Добро пожаловать</h1>
+                    <p>Настройте ваше устройство</p>
+                    <button id="setup-complete" class="btn-primary">Начать</button>
+                </div>
+            </div>
+
+            <!-- Рабочий стол -->
+            <div id="desktop" class="screen desktop hidden">
+                <div class="wallpaper"></div>
+                
+                <div class="app-grid">
+                    <div class="app-icon" data-app="phone">
+                        <div class="icon-wrapper">
+                            <img src="./public/images/Icons/harmonyos_icon/phone.png" alt="Телефон">
+                        </div>
+                        <span>Телефон</span>
+                    </div>
+                    <div class="app-icon" data-app="messages">
+                        <div class="icon-wrapper">
+                            <img src="./public/images/Icons/harmonyos_icon/messages.png" alt="Сообщения">
+                        </div>
+                        <span>Сообщения</span>
+                    </div>
+                    <div class="app-icon" data-app="music">
+                        <div class="icon-wrapper">
+                            <img src="./public/images/Icons/harmonyos_icon/music.png" alt="Музыка">
+                        </div>
+                        <span>Музыка</span>
+                    </div>
+                    <div class="app-icon" data-app="gallery">
+                        <div class="icon-wrapper">
+                            <img src="./public/images/Icons/harmonyos_icon/gallery.png" alt="Галерея">
+                        </div>
+                        <span>Галерея</span>
+                    </div>
+                    <div class="app-icon" data-app="calculator">
+                        <div class="icon-wrapper">
+                            <img src="./public/images/Icons/harmonyos_icon/calculator.png" alt="Калькулятор">
+                        </div>
+                        <span>Калькулятор</span>
+                    </div>
+                    <div class="app-icon" data-app="calendar">
+                        <div class="icon-wrapper">
+                            <img src="./public/images/Icons/harmonyos_icon/calendar.png" alt="Календарь">
+                        </div>
+                        <span>Календарь</span>
+                    </div>
+                    <div class="app-icon" data-app="clock">
+                        <div class="icon-wrapper">
+                            <img src="./public/images/Icons/harmonyos_icon/clock.png" alt="Часы">
+                        </div>
+                        <span>Часы</span>
+                    </div>
+                    <div class="app-icon" data-app="compass">
+                        <div class="icon-wrapper">
+                            <img src="./public/images/Icons/harmonyos_icon/compass.png" alt="Компас">
+                        </div>
+                        <span>Компас</span>
+                    </div>
+                    <div class="app-icon" data-app="files">
+                        <div class="icon-wrapper">
+                            <img src="./public/images/Icons/harmonyos_icon/files.png" alt="Файлы">
+                        </div>
+                        <span>Файлы</span>
+                    </div>
+                    <div class="app-icon" data-app="settings">
+                        <div class="icon-wrapper">
+                            <img src="./public/images/Icons/harmonyos_icon/settings.png" alt="Настройки">
+                        </div>
+                        <span>Настройки</span>
+                    </div>
+                </div>
+
+                <!-- Док-панель -->
+                <div class="dock">
+                    <div class="dock-icon" data-app="phone">
+                        <img src="./public/images/Icons/harmonyos_icon/phone.png" alt="Телефон">
+                    </div>
+                    <div class="dock-icon" data-app="messages">
+                        <img src="./public/images/Icons/harmonyos_icon/messages.png" alt="Сообщения">
+                    </div>
+                    <div class="dock-icon" data-app="music">
+                        <img src="./public/images/Icons/harmonyos_icon/music.png" alt="Музыка">
+                    </div>
+                    <div class="dock-icon" data-app="settings">
+                        <img src="./public/images/Icons/harmonyos_icon/settings.png" alt="Настройки">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Окно приложения -->
+            <div id="app-window" class="screen app-window hidden">
+                <div class="app-header">
+                    <button class="back-btn">←</button>
+                    <h2 class="app-title">Приложение</h2>
+                </div>
+                <div class="app-content">
+                    <!-- Контент приложения будет загружаться здесь -->
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- Рабочий стол -->
-    <div id="desktop"></div>
-
-    <!-- Окно приложения -->
-    <div id="app-window" class="hidden">
-      <div id="app-header">
-        <span id="app-title">App</span>
-        <button id="close-app">X</button>
-      </div>
-      <div id="app-content"></div>
-    </div>
-  </div>
-
-  <script src="./Public/script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
