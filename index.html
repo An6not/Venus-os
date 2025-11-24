@@ -3,38 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MobileOS Simulator</title>
+    <title>Mobile OS</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="phone-container">
-        <div class="phone-screen">
-            <!-- Динамический островок -->
-            <div class="dynamic-island" id="dynamicIsland">
-                <span id="islandText">12:30</span>
+    <div class="phone-frame">
+        <div class="status-bar">
+            <div class="time">12:30</div>
+            <div class="status-icons">
+                <span class="signal">📶</span>
+                <span class="wifi">📡</span>
+                <span class="battery">🔋</span>
             </div>
-
-            <!-- Загрузочный экран -->
-            <div id="boot-screen" class="screen boot-screen">
-                <div class="boot-logo">
-                    <div class="logo-spinner"></div>
-                    <h1>MobileOS</h1>
+        </div>
+        
+        <div class="home-screen">
+            <div class="app-grid" id="appGrid">
+                <!-- Приложения будут добавлены через JavaScript -->
+            </div>
+        </div>
+        
+        <div class="dock">
+            <div class="dock-apps">
+                <div class="app-icon" data-app="phone">
+                    <span class="app-emoji">📞</span>
+                    <span class="app-name">Телефон</span>
+                </div>
+                <div class="app-icon" data-app="messages">
+                    <span class="app-emoji">💬</span>
+                    <span class="app-name">Сообщения</span>
+                </div>
+                <div class="app-icon" data-app="camera">
+                    <span class="app-emoji">📷</span>
+                    <span class="app-name">Камера</span>
+                </div>
+                <div class="app-icon" data-app="browser">
+                    <span class="app-emoji">🌐</span>
+                    <span class="app-name">Браузер</span>
                 </div>
             </div>
+        </div>
+    </div>
 
-            <!-- Экран настройки -->
-            <div id="setup-screen" class="screen setup-screen hidden">
-                <div class="setup-content">
-                    <h1>Добро пожаловать</h1>
-                    <p>Настройте ваше устройство</p>
-                    <button id="setup-complete" class="btn-primary">Начать</button>
-                </div>
-            </div>
+    <!-- Окна приложений -->
+    <div id="appWindows"></div>
 
-            <!-- Рабочий стол -->
-            <div id="desktop" class="screen desktop hidden">
-                <div class="wallpaper"></div>
-                
+    <script src="script.js"></script>
+</body>
+</html>                
                 <div class="app-grid">
                     <div class="app-icon" data-app="phone">
                         <div class="icon-wrapper">
