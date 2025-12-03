@@ -1,39 +1,148 @@
-// Приложения для рабочего стола
-const apps = [
-    { id: 'phone', name: 'Телефон', emoji: '📞', color: '#4CAF50' },
-    { id: 'messages', name: 'Сообщения', emoji: '💬', color: '#2196F3' },
-    { id: 'camera', name: 'Камера', emoji: '📷', color: '#FF9800' },
-    { id: 'photos', name: 'Фото', emoji: '🖼️', color: '#E91E63' },
-    { id: 'music', name: 'Музыка', emoji: '🎵', color: '#9C27B0' },
-    { id: 'weather', name: 'Погода', emoji: '☀️', color: '#FFC107' },
-    { id: 'calendar', name: 'Календарь', emoji: '📅', color: '#F44336' },
-    { id: 'settings', name: 'Настройки', emoji: '⚙️', color: '#607D8B' },
-    { id: 'calculator', name: 'Калькулятор', emoji: '🧮', color: '#795548' },
-    { id: 'notes', name: 'Заметки', emoji: '📝', color: '#FF5722' },
-    { id: 'mail', name: 'Почта', emoji: '📧', color: '#009688' },
-    { id: 'browser', name: 'Браузер', emoji: '🌐', color: '#3F51B5' }
-];
+// --- 1. Настройка Canvas ---
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
 
-// Инициализация рабочего стола
-function initHomeScreen() {
-    const appGrid = document.getElementById('appGrid');
-    
-    apps.forEach(app => {
-        const appElement = document.createElement('div');
-        appElement.className = 'app-icon';
-        appElement.setAttribute('data-app', app.id);
-        appElement.innerHTML = `
-            <span class="app-emoji">${app.emoji}</span>
-            <span class="app-name">${app.name}</span>
-        `;
-        appElement.addEventListener('click', () => openApp(app));
-        appGrid.appendChild(appElement);
-    });
+function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resize);
+resize();
+
+// --- 2. Сетевая часть (Socket.io) ---
+const socket = io(); // Подключаемся к серверу
+
+// Хранилище всех игроков
+let players = {};
+
+// Получаем состояние от сервера 60 раз в секунду
+socket.on('state', (serverPlayers) => {
+    players = serverPlayers;
+    draw(); // Перерисовываем экран
+});
+
+// Наш ID (чтобы знать, кто из квадратиков - мы)
+let myId = null;
+socket.on('connect', () => {
+    myId = socket.id;
+});
+
+// --- 3. Отрисовка ---
+function draw() {
+    // Очистка экрана
+    ctx.fillStyle = '#222';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Рисуем сетку для красоты
+    drawGrid();
+
+    // Рисуем всех игроков
+    for (let id in players) {
+        const p = players[id];
+        ctx.fillStyle = p.color;
+        
+        // Если это мы, добавляем обводку
+        if (id === myId) {
+            ctx.lineWidth = 4;
+            ctx.strokeStyle = '#fff';
+            ctx.strokeRect(p.x, p.y, 40, 40);
+        }
+        
+        ctx.fillRect(p.x, p.y, 40, 40);
+        
+        // Имя/ID над игроком
+        ctx.fillStyle = 'white';
+        ctx.font = '12px Arial';
+        ctx.fillText(id.substring(0, 5), p.x, p.y - 10);
+    }
 }
 
-// Открытие приложения
-function openApp(app) {
-    const appWindows = document.getElementById('appWindows');
+function drawGrid() {
+    ctx.strokeStyle = '#333';
+    ctx.lineWidth = 1;
+    for(let i=0; i<canvas.width; i+=50) {
+        ctx.beginPath(); ctx.moveTo(i,0); ctx.lineTo(i, canvas.height); ctx.stroke();
+    }
+    for(let i=0; i<canvas.height; i+=50) {
+        ctx.beginPath(); ctx.moveTo(0,i); ctx.lineTo(canvas.width, i); ctx.stroke();
+    }
+}
+
+// --- 4. Управление (Джойстик) ---
+const joyZone = document.getElementById('joystickZone');
+const joyStick = document.getElementById('joystickStick');
+let movement = { x: 0, y: 0 }; // Вектор движения
+
+// Обработка касаний
+joyZone.addEventListener('touchmove', handleTouch, { passive: false });
+joyZone.addEventListener('touchstart', handleTouch, { passive: false });
+joyZone.addEventListener('touchend', endTouch);
+
+// Для теста на ПК - мышка
+let isMouseDown = false;
+joyZone.addEventListener('mousedown', (e) => { isMouseDown = true; handleTouch(e); });
+window.addEventListener('mousemove', (e) => { if(isMouseDown) handleTouch(e); });
+window.addEventListener('mouseup', () => { isMouseDown = false; endTouch(); });
+
+
+function handleTouch(e) {
+    e.preventDefault(); // Чтобы экран не скроллился
+    
+    // Получаем координаты касания или мыши
+    let clientX, clientY;
+    if(e.touches) {
+        clientX = e.touches[0].clientX;
+        clientY = e.touches[0].clientY;
+    } else {
+        clientX = e.clientX;
+        clientY = e.clientY;
+    }
+
+    // Центр джойстика
+    const rect = joyZone.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+
+    // Вектор от центра
+    let dx = clientX - centerX;
+    let dy = clientY - centerY;
+
+    // Ограничиваем радиус движения стика
+    const distance = Math.min(Math.hypot(dx, dy), rect.width / 2);
+    const angle = Math.atan2(dy, dx);
+
+    // Новые координаты стика
+    const stickX = Math.cos(angle) * distance;
+    const stickY = Math.sin(angle) * distance;
+
+    // Двигаем визуальный стик
+    joyStick.style.transform = `translate(${stickX}px, ${stickY}px)`;
+
+    // Нормализуем данные для сервера (-1 до 1)
+    movement.x = stickX / (rect.width / 2);
+    movement.y = stickY / (rect.height / 2);
+}
+
+function endTouch() {
+    movement = { x: 0, y: 0 };
+    joyStick.style.transform = `translate(0px, 0px)`;
+}
+
+// Отправляем данные движения на сервер 60 раз в секунду
+setInterval(() => {
+    socket.emit('movement', movement);
+}, 1000 / 60);
+
+
+// --- 5. Полный экран ---
+const btn = document.getElementById('fullscreenBtn');
+btn.addEventListener('click', () => {
+    if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+    } else {
+        document.exitFullscreen();
+    }
+});
     
     // Создаем оверлей
     let overlay = document.querySelector('.overlay');
