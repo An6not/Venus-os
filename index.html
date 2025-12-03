@@ -2,38 +2,24 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mobile OS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>2D Multiplayer Game</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="phone-frame">
-        <div class="status-bar">
-            <div class="time">12:30</div>
-            <div class="status-icons">
-                <span class="signal">📶</span>
-                <span class="wifi">📡</span>
-                <span class="battery">🔋</span>
-            </div>
-        </div>
-        
-        <div class="home-screen">
-            <div class="app-grid" id="appGrid">
-                <!-- Приложения будут добавлены через JavaScript -->
-            </div>
-        </div>
-        
-        <div class="dock">
-            <div class="dock-apps">
-                <div class="app-icon" data-app="phone">
-                    <span class="app-emoji">📞</span>
-                    <span class="app-name">Телефон</span>
-                </div>
-                <div class="app-icon" data-app="messages">
-                    <span class="app-emoji">💬</span>
-                    <span class="app-name">Сообщения</span>
-                </div>
-                <div class="app-icon" data-app="camera">
+
+    <button id="fullscreenBtn">📺 Fullscreen</button>
+
+    <canvas id="gameCanvas"></canvas>
+
+    <div id="joystickZone">
+        <div id="joystickStick"></div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
                     <span class="app-emoji">📷</span>
                     <span class="app-name">Камера</span>
                 </div>
