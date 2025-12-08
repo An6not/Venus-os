@@ -1,39 +1,428 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    user-select: none; /* Запрет выделения текста на телефоне */
+/* ============================================ */
+/* === STYLE.CSS: СТИЛИ ДЛЯ КОНКРЕТНЫХ ТУЛОВ === */
+/* ============================================ */
+
+/* --- Стили Общие --- */
+.results span {
+    font-weight: bold;
+    color: var(--primary-color);
+}
+.input-group.checkboxes {
+    margin-bottom: 5px;
+}
+.input-group.checkboxes label {
+    margin-right: 15px;
+    margin-bottom: 8px;
 }
 
-body {
-    overflow: hidden; /* Чтобы не было прокрутки */
-    background-color: #222;
-    touch-action: none; /* Важно для управления пальцами */
-    font-family: sans-serif;
-}
-
-#gameCanvas {
-    display: block;
-    width: 100vw;
-    height: 100vh;
-}
-
-/* Кнопка полного экрана */
-#fullscreenBtn {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    padding: 10px 20px;
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
-    border: 2px solid white;
+/* --- Стили Калькулятора --- */
+.calculator-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    width: 100%;
+    max-width: 350px; 
+    margin: 15px auto;
+    padding: 15px;
+    border: 1px solid var(--border-color);
     border-radius: 8px;
+    background-color: var(--tool-bg); /* Используем фон тула */
+}
+
+#calc-display {
+    grid-column: 1 / -1;
+    background-color: var(--secondary-color);
+    color: white;
+    font-size: 2em;
+    text-align: right;
+    padding: 15px 10px;
+    border: none;
+    margin-bottom: 5px;
+}
+
+.calc-btn {
+    padding: 15px;
+    font-size: 1.1em;
+    border: none;
+    border-radius: 5px;
     cursor: pointer;
+    transition: background-color 0.1s;
+    background-color: var(--input-bg);
+    color: var(--text-color);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.calc-btn:hover {
+    background-color: var(--button-hover-bg);
+}
+
+.calc-btn.action-btn {
+    background-color: #95a5a6;
+    color: white;
+}
+
+.calc-btn.action-btn:hover {
+    background-color: #7f8c8d;
+}
+
+.calc-btn.operation {
+    background-color: #f39c12;
+    color: white;
+}
+
+.calc-btn.operation:hover {
+    background-color: #e67e22;
+}
+
+.calc-btn.equals {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.calc-btn.equals:hover {
+    background-color: #16a085;
+}
+
+.calc-btn.span-2 {
+    grid-column: span 2;
+}
+
+/* --- Стили Крестики-Нолики --- */
+.tictactoe-board {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    width: 300px; 
+    height: 300px;
+    margin: 15px auto;
+    border: 3px solid var(--secondary-color);
+}
+
+.tictactoe-cell {
+    border: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.1s;
+}
+
+.tictactoe-cell:hover {
+    background-color: var(--button-hover-bg);
+}
+
+.tictactoe-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 5px;
+    flex-wrap: wrap; 
+}
+
+/* --- Стили Змейка --- */
+#snake-canvas {
+    border: 3px solid var(--primary-color);
+    display: block;
+    margin: 15px auto;
+    background-color: var(--input-bg);
+}
+
+.snake-settings {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+.snake-settings input[type="range"] {
+    flex-grow: 1;
+    margin-right: 5px;
+}
+
+/* --- Стили Bytebeat --- */
+.bytebeat-controls {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+#bytebeat-visualizer {
+    display: block;
+    margin-top: 10px;
+    background-color: var(--secondary-color);
+    border-radius: 5px;
+    border: 1px solid var(--primary-color);
+    max-width: 100%;
+}
+
+/* --- Стили Таймер/Секундомер --- */
+.timer-display {
+    font-size: 2.5em;
+    font-weight: bold;
+    text-align: center;
+    padding: 15px;
+    background-color: var(--input-bg);
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+.timer-controls {
+    display: flex;
+    justify-content: space-around;
+    gap: 10px;
+}
+
+/* --- Стили Мини-IDE --- */
+.ide-controls {
+    margin-bottom: 10px;
+}
+.ide-controls button {
+    margin-right: 5px;
+    background-color: var(--input-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+}
+.ide-controls button.active {
+    background-color: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+#ide-editor {
+    font-family: 'Consolas', monospace;
+    font-size: 13px;
+    white-space: pre;
+    overflow: auto;
+    tab-size: 4;
+}
+.ide-preview {
+    width: 100%;
+    height: 150px;
+    border: 1px solid var(--border-color);
+    background-color: #ffffff; /* Фон превью всегда светлый для HTML */
+}
+
+/* --- Стили Game of Life --- */
+#gol-canvas {
+    display: block;
+    margin: 15px auto;
+    border: 1px solid var(--border-color);
+    background-color: var(--input-bg);
+}
+.gol-controls {
+    display: flex;
+    justify-content: space-around;
+    gap: 10px;
+}
+
+/* --- Стили OS Mockup (Анимации) --- */
+.mockup-container {
+    position: relative;
+    width: 320px; 
+    height: 570px; 
+    margin: 20px auto;
+    border: 8px solid var(--secondary-color);
+    border-radius: 30px; 
+    background-color: #34495e; 
+    overflow: hidden;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
+    touch-action: none;
+}
+
+.app-icon {
+    position: absolute;
+    top: 50px;
+    width: 60px;
+    height: 60px;
+    border-radius: 15px;
+    background-color: rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    cursor: pointer;
+    transition: transform 0.2s;
     z-index: 10;
 }
+.app-icon:nth-child(1) { left: 40px; }
+.app-icon:nth-child(2) { left: 130px; }
+.app-icon:nth-child(3) { left: 220px; }
 
-#fullscreenBtn:active {
-    background: rgba(255, 255, 255, 0.5);
+
+#app-window-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+.app-window {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--main-bg); 
+    border-radius: 25px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    z-index: 20;
+    transform-origin: top left;
+    display: flex;
+    flex-direction: column;
+    pointer-events: all;
+}
+.app-window-header {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 10px;
+    border-top-left-radius: 25px;
+    border-top-right-radius: 25px;
+    text-align: center;
+    cursor: move;
+}
+.app-window-content {
+    flex-grow: 1;
+    padding: 15px;
+    color: var(--text-color);
+    font-size: 0.9em;
+    opacity: 0.8;
+}
+.gesture-bar {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120px;
+    height: 7px;
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 5px;
+    z-index: 30;
+}
+
+.closing {
+    transition: transform 0.3s cubic-bezier(0,0,0,1), opacity 0.3s ease-in;
+}
+.opening {
+    transition: transform 0.3s cubic-bezier(.4,0,.2,1), opacity 0.3s ease-out;
+}
+
+/* --- Стили Браузер-Заглушка --- */
+.browser-mockup {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: var(--tool-bg);
+}
+
+.browser-header {
+    display: flex;
+    align-items: center;
+    padding: 8px 10px;
+    background-color: var(--input-bg);
+    border-bottom: 1px solid var(--border-color);
+    gap: 5px;
+}
+.browser-btn {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-right: 2px;
+}
+.browser-btn.red { background-color: #ff605c; }
+.browser-btn.yellow { background-color: #ffbd44; }
+.browser-btn.green { background-color: #00ca4e; }
+
+.address-bar {
+    flex-grow: 1;
+    height: 30px;
+    padding: 0 10px;
+    margin: 0 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    background-color: var(--tool-bg);
+    color: var(--text-color);
+    font-size: 14px;
+}
+
+.browser-screen {
+    min-height: 250px;
+    padding: 15px;
+    background-color: var(--tool-bg);
+}
+
+.download-item {
+    display: flex;
+    flex-direction: column;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.download-bar-container {
+    width: 100%;
+    background-color: var(--border-color);
+    border-radius: 3px;
+    margin-top: 5px;
+}
+
+.download-bar {
+    height: 8px;
+    width: 0%;
+    background-color: var(--primary-color);
+    border-radius: 3px;
+    transition: width 0.5s linear;
+}
+
+.download-text {
+    font-size: 0.9em;
+    color: var(--text-color);
+    opacity: 0.8;
+    display: flex;
+    justify-content: space-between;
+}
+
+/* --- Стили Оконной Системы (Казуальная) --- */
+.window-system-container {
+    position: relative;
+    height: 300px; /* Размер "рабочего стола" */
+    border: 1px solid var(--border-color);
+    margin-top: 15px;
+}
+
+.app-window-resizable {
+    position: absolute;
+    min-width: 150px;
+    min-height: 100px;
+    background-color: var(--tool-bg);
+    border: 1px solid var(--primary-color);
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    cursor: default;
+    overflow: hidden;
+    pointer-events: all; 
+    z-index: 101;
+    /* Ручная реализация resize border/corner handles будет в JS, но базовый стиль тут */
+}
+.app-window-resizable-header {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 5px 10px;
+    cursor: grab;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.window-close-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 1.1em;
+    line-height: 1;
+}
 }
 
 /* Зона джойстика */
