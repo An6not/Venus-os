@@ -3,133 +3,534 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>2D Multiplayer Game</title>
-    <link rel="stylesheet" href="style.css">
+    <title data-i18n="title">Мультитул | Версия 0.8 Альфа</title>
+    <link rel="stylesheet" href="if.css"> 
+    <link rel="stylesheet" href="style.css"> 
 </head>
-<body>
+<body data-theme="dark">
 
-    <button id="fullscreenBtn">📺 Fullscreen</button>
+    <header>
+        <h1 data-i18n="header_title">Мультитул | 0.8 Альфа 🚀</h1>
+    </header>
 
-    <canvas id="gameCanvas"></canvas>
-
-    <div id="joystickZone">
-        <div id="joystickStick"></div>
-    </div>
-
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="script.js"></script>
-</body>
-</html>
-                    <span class="app-emoji">📷</span>
-                    <span class="app-name">Камера</span>
-                </div>
-                <div class="app-icon" data-app="browser">
-                    <span class="app-emoji">🌐</span>
-                    <span class="app-name">Браузер</span>
-                </div>
+    <main class="container">
+        
+        <div class="top-controls">
+            <div id="status-panel" class="status-panel">
+                <span data-i18n="cpu_label">CPU:</span> <span id="cpu-load">0%</span>
+                <span data-i18n="ram_label">RAM:</span> <span id="ram-used">0 MB</span> / 1024 MB
+            </div>
+            
+            <div class="settings-bar">
+                <button id="toggle-theme" class="action-button" data-i18n="toggle_theme_btn">💡 Сменить тему</button>
+                <select id="language-switcher" class="action-button">
+                    <option value="ru">Русский</option>
+                    <option value="en">English</option>
+                    <option value="uk">Українська</option>
+                    <option value="lt">Lietuvių</option>
+                </select>
             </div>
         </div>
-    </div>
 
-    <!-- Окна приложений -->
-    <div id="appWindows"></div>
+        <nav class="tool-navigation">
+            <button class="nav-button active" data-tool="password-gen" data-i18n="nav_password_gen">Генератор Паролей</button>
+            <button class="nav-button" data-tool="qr-generator" data-i18n="nav_qr_generator">QR/Штрих-код</button>
+            <button class="nav-button" data-tool="uuid-gen" data-i18n="nav_uuid_gen">UUID/Никнеймы</button>
+            <button class="nav-button" data-tool="random-gen" data-i18n="nav_random_gen">Генератор Значений</button>
+            <button class="nav-button" data-tool="labyrinth" data-i18n="nav_labyrinth">Генератор Лабиринтов</button>
+            <button class="nav-button" data-tool="color-palette" data-i18n="nav_color_palette">Генератор Палитр</button>
+            <button class="nav-button" data-tool="fractal-gen" data-i18n="nav_fractal_gen">Генератор Фракталов</button>
+            <button class="nav-button" data-tool="pattern-gen" data-i18n="nav_pattern_gen">Генератор Паттернов</button>
+            
+            <button class="nav-button" data-tool="mini-ide" data-i18n="nav_mini_ide">Мини-IDE</button>
+            <button class="nav-button" data-tool="json-formatter" data-i18n="nav_json_formatter">JSON Форматтер</button>
+            <button class="nav-button" data-tool="regexp-tester" data-i18n="nav_regexp_tester">RegExp Тестер</button>
+            <button class="nav-button" data-tool="base64-converter" data-i18n="nav_base64_converter">Base64</button>
+            <button class="nav-button" data-tool="code-encrypt" data-i18n="nav_code_encrypt">Шифратор</button>
+            <button class="nav-button" data-tool="hasher" data-i18n="nav_hasher">Хешер</button>
+            <button class="nav-button" data-tool="archiver" data-i18n="nav_archiver">Архиватор</button>
+            <button class="nav-button" data-tool="text-analyzer" data-i18n="nav_text_analyzer">Анализатор Текста</button>
+            
+            <button class="nav-button" data-tool="image-editor" data-i18n="nav_image_editor">Редактор Изобр.</button>
+            <button class="nav-button" data-tool="image-converter" data-i18n="nav_image_converter">Конвертер Изобр.</button>
+            <button class="nav-button" data-tool="audio-generator" data-i18n="nav_audio_generator">Аудио-Генерация</button>
+            <button class="nav-button" data-tool="video-player" data-i18n="nav_video_player">Видеоплеер</button>
+            <button class="nav-button" data-tool="bytebeat" data-i18n="nav_bytebeat">Bytebeat/Визуал</button>
+            
+            <button class="nav-button" data-tool="game-of-life" data-i18n="nav_game_of_life">Жизнь Конвея</button>
+            <button class="nav-button" data-tool="tetris" data-i18n="nav_tetris">Тетрис</button>
+            <button class="nav-button" data-tool="pong" data-i18n="nav_pong">Понг</button>
+            <button class="nav-button" data-tool="2048" data-i18n="nav_2048">2048</button>
+            <button class="nav-button" data-tool="sand-sim" data-i18n="nav_sand_sim">Песочница Частиц</button>
+            <button class="nav-button" data-tool="perceptron" data-i18n="nav_perceptron">Перцептрон</button>
+            <button class="nav-button" data-tool="tictactoe" data-i18n="nav_tictactoe">Х/О</button>
+            <button class="nav-button" data-tool="snake" data-i18n="nav_snake">Змейка (AI)</button>
+            
+            <button class="nav-button" data-tool="browser" data-i18n="nav_browser">Браузер</button>
+            <button class="nav-button" data-tool="os-mockup" data-i18n="nav_os_mockup">OS Анимации</button>
+            <button class="nav-button" data-tool="notepad" data-i18n="nav_notepad">Мини-Блокнот</button>
+            <button class="nav-button" data-tool="timer" data-i18n="nav_timer">Таймер/Секунд.</button>
+            <button class="nav-button" data-tool="converter" data-i18n="nav_converter">Конвертер $\text{C}$/$\text{F}$</button>
+            <button class="nav-button" data-tool="currency-converter" data-i18n="nav_currency_converter">Конвертер Валют</button>
+            <button class="nav-button" data-tool="counter" data-i18n="nav_counter">Счетчик Слов</button>
+            <button class="nav-button" data-tool="calculator" data-i18n="nav_calculator">Калькулятор</button>
+            <button class="nav-button" data-tool="window-system" data-i18n="nav_window_system">Оконная Система</button>
+        </nav>
 
-    <script src="script.js"></script>
-</body>
-</html>                
-                <div class="app-grid">
-                    <div class="app-icon" data-app="phone">
-                        <div class="icon-wrapper">
-                            <img src="./public/images/Icons/harmonyos_icon/phone.png" alt="Телефон">
-                        </div>
-                        <span>Телефон</span>
+        <div class="tool-area">
+
+            <section id="password-gen" class="tool-section active">
+                <h2 data-i18n="pwg_title">Генератор Паролей</h2>
+                <div class="input-group">
+                    <label for="password-length" data-i18n="pwg_length_label">Длина:</label>
+                    <input type="number" id="password-length" value="16" min="8" max="128">
+                </div>
+                <div class="input-group checkboxes">
+                    <label><input type="checkbox" id="pass-upper" checked> <span data-i18n="pwg_upper">Заглавные (A-Z)</span></label>
+                    <label><input type="checkbox" id="pass-lower" checked> <span data-i18n="pwg_lower">Строчные (a-z)</span></label>
+                    <label><input type="checkbox" id="pass-numbers" checked> <span data-i18n="pwg_numbers">Цифры (0-9)</span></label>
+                    <label><input type="checkbox" id="pass-symbols"> <span data-i18n="pwg_symbols">Символы (!@#$%^)</span></label>
+                </div>
+                <button id="generate-password" class="action-button button-success" data-i18n="pwg_generate_btn">Сгенерировать</button>
+                <p><span data-i18n="pwg_output_label">Пароль:</span> <input type="text" id="password-output" readonly></p>
+            </section>
+            
+            <section id="qr-generator" class="tool-section hidden">
+                <h2 data-i18n="qr_title">QR-код/штрих-код генератор</h2>
+                <input type="text" id="qr-input" data-i18n-placeholder="qr_input_placeholder" placeholder="Введите текст или URL">
+                <canvas id="qr-canvas" width="200" height="200"></canvas>
+            </section>
+            
+            <section id="notepad" class="tool-section hidden">
+                <h2 data-i18n="notepad_title">Мини-блокнот</h2>
+                <textarea id="notepad-area" rows="10" data-i18n-placeholder="notepad_placeholder">Ваши заметки сохраняются локально...</textarea>
+            </section>
+
+            <section id="timer" class="tool-section hidden">
+                <h2 data-i18n="timer_title">Таймер / Секундомер</h2>
+                <div class="timer-display" id="timer-display">00:00:00</div>
+                <div class="timer-controls">
+                    <button id="timer-start" class="action-button button-success" data-i18n="timer_start_btn">Старт</button>
+                    <button id="timer-stop" class="action-button button-danger" data-i18n="timer_stop_btn">Стоп</button>
+                    <button id="timer-reset" class="action-button" data-i18n="timer_reset_btn">Сброс</button>
+                </div>
+                <hr>
+                <label for="timer-set" data-i18n="timer_set_label">Установить Таймер (секунды):</label>
+                <input type="number" id="timer-set" value="60" min="1">
+            </section>
+            
+            <section id="currency-converter" class="tool-section hidden">
+                <h2 data-i18n="cur_title">Конвертер валют</h2>
+                <p class="note" data-i18n="cur_note">Офлайн: USD/EUR/RUB (фиксированные курсы).</p>
+                <div class="input-group" style="display: flex; gap: 10px; align-items: center;">
+                    <input type="number" id="currency-input" value="100" style="width: 100px;">
+                    <select id="currency-from" style="width: 100px;">
+                        <option value="USD">USD</option>
+                        <option value="EUR">EUR</option>
+                        <option value="RUB">RUB</option>
+                    </select>
+                    <span>$\rightarrow$</span>
+                    <select id="currency-to" style="width: 100px;">
+                        <option value="EUR">EUR</option>
+                        <option value="USD">USD</option>
+                        <option value="RUB">RUB</option>
+                    </select>
+                </div>
+                <p><span data-i18n="cur_output_label">Результат:</span> <span id="currency-output">0</span></p>
+            </section>
+
+            <section id="uuid-gen" class="tool-section hidden">
+                <h2 data-i18n="uuid_title">Генератор UUID/Никнеймов</h2>
+                <button id="generate-uuid" class="action-button">UUID</button>
+                <button id="generate-nickname" class="action-button" data-i18n="uuid_nickname_btn">Никнейм</button>
+                <p id="uuid-output"></p>
+            </section>
+
+            <section id="regexp-tester" class="tool-section hidden">
+                <h2 data-i18n="reg_title">RegExp Тестер</h2>
+                <label for="regexp-pattern" data-i18n="reg_pattern_label">Паттерн (/.../):</label>
+                <input type="text" id="regexp-pattern" value="/\d{3}-\d{2}/g">
+                <label for="regexp-text" data-i18n="reg_text_label">Тестовый текст:</label>
+                <textarea id="regexp-text" rows="5">Код: 123-45. Дата: 01-01.</textarea>
+                <button id="run-regexp" class="action-button" data-i18n="reg_run_btn">Проверить</button>
+                <div id="regexp-results" class="results"></div>
+            </section>
+            
+            <section id="mini-ide" class="tool-section hidden">
+                <h2 data-i18n="ide_title">Мини-IDE (HTML/CSS/JS)</h2>
+                <div class="ide-controls">
+                    <button data-lang="html" class="action-button active">HTML</button>
+                    <button data-lang="css" class="action-button">CSS</button>
+                    <button data-lang="js" class="action-button">JS</button>
+                </div>
+                <textarea id="ide-editor" rows="10" placeholder="Введите код здесь..."></textarea>
+                <button id="run-ide" class="action-button button-success" data-i18n="ide_run_btn">Обновить Предпросмотр</button>
+                <h3 data-i18n="ide_preview_title">Предпросмотр:</h3>
+                <iframe id="ide-preview" class="ide-preview" sandbox="allow-scripts"></iframe>
+            </section>
+            
+            <section id="json-formatter" class="tool-section hidden">
+                <h2 data-i18n="json_title">JSON Форматтер/Валидатор</h2>
+                <label for="json-input" data-i18n="json_input_label">JSON Ввод:</label>
+                <textarea id="json-input" rows="8">{"name":"Test", "value":1}</textarea>
+                <button id="format-json" class="action-button" data-i18n="json_format_btn">Форматировать/Валидировать</button>
+                <div id="json-status" class="results note"></div>
+                <label for="json-output" data-i18n="json_output_label">Вывод (Formatted):</label>
+                <textarea id="json-output" rows="8" readonly></textarea>
+            </section>
+
+            <section id="base64-converter" class="tool-section hidden">
+                <h2 data-i18n="base64_title">Base64 Encode/Decode</h2>
+                <label for="base64-input" data-i18n="base64_input_label">Ввод (Текст/Base64):</label>
+                <textarea id="base64-input" rows="5">Hello World</textarea>
+                <button id="encode-base64" class="action-button" data-i18n="base64_encode_btn">Encode $\rightarrow$</button>
+                <button id="decode-base64" class="action-button" data-i18n="base64_decode_btn">$\leftarrow$ Decode</button>
+                <label for="base64-output" data-i18n="base64_output_label">Вывод:</label>
+                <textarea id="base64-output" rows="5" readonly></textarea>
+            </section>
+            
+            <section id="code-encrypt" class="tool-section hidden">
+                <h2 data-i18n="cipher_title">Шифратор/Дешифратор</h2>
+                <select id="cipher-type">
+                    <option value="caesar">Caesar</option>
+                    <option value="vigenere">Vigenère</option>
+                </select>
+                <input type="text" id="cipher-key" data-i18n-placeholder="cipher_key_placeholder" placeholder="Ключ/Сдвиг">
+                <textarea id="cipher-input" rows="5"></textarea>
+                <button id="run-cipher" class="action-button" data-i18n="cipher_encrypt_btn">Зашифровать</button>
+                <textarea id="cipher-output" rows="5" readonly></textarea>
+            </section>
+            
+            <section id="hasher" class="tool-section hidden">
+                <h2 data-i18n="hash_title">Хешер</h2>
+                <select id="hash-type">
+                    <option value="md5">MD5</option>
+                    <option value="sha256">SHA256</option>
+                </select>
+                <input type="text" id="hash-input" data-i18n-placeholder="hash_placeholder" placeholder="Введите текст">
+                <p><span data-i18n="hash_output_label">Хеш:</span> <span id="hash-output"></span></p>
+            </section>
+            
+            <section id="random-gen" class="tool-section hidden">
+                <h2 data-i18n="rand_title">Генератор случайных значений</h2>
+                <button id="generate-number" class="action-button" data-i18n="rand_number_btn">Число</button>
+                <button id="generate-color" class="action-button" data-i18n="rand_color_btn">Цвет</button>
+                <p id="random-output"></p>
+            </section>
+            
+            <section id="image-editor" class="tool-section hidden">
+                <h2 data-i18n="img_editor_title">Редактор изображений</h2>
+                <input type="file" accept="image/*">
+                <p data-i18n="img_editor_tools">Обрезка, Масштаб</p>
+            </section>
+            
+            <section id="image-converter" class="tool-section hidden">
+                <h2 data-i18n="img_converter_title">Конвертер изображений</h2>
+                <input type="file" accept="image/*">
+                <select><option>PNG $\rightarrow$ JPG</option></select>
+                <button class="action-button" data-i18n="img_converter_convert_btn">Конвертировать</button>
+            </section>
+            
+            <section id="audio-generator" class="tool-section hidden">
+                <h2 data-i18n="aud_gen_title">Аудио-Генерация (Sine/Square)</h2>
+                <canvas id="audio-wave-canvas" width="300" height="100"></canvas>
+                <button class="action-button" data-i18n="aud_gen_play_btn">Play Tone</button>
+            </section>
+            
+            <section id="video-player" class="tool-section hidden">
+                <h2 data-i18n="vid_player_title">Видеоплеер</h2>
+                <input type="file" accept="video/*">
+                <video controls style="width: 100%; max-height: 200px;"></video>
+            </section>
+            
+            <section id="game-of-life" class="tool-section hidden">
+                <h2 data-i18n="gol_title">Игра Жизнь Конвея</h2>
+                <canvas id="gol-canvas" width="300" height="300"></canvas>
+                <div class="gol-controls">
+                    <button id="gol-start" class="action-button button-success" data-i18n="gol_start_btn">Старт</button>
+                    <button id="gol-reset" class="action-button" data-i18n="gol_reset_btn">Сброс</button>
+                    <button id="gol-random" class="action-button" data-i18n="gol_random_btn">Рандом</button>
+                </div>
+            </section>
+            
+            <section id="tetris" class="tool-section hidden">
+                <h2 data-i18n="tetris_title">Тетрис</h2>
+                <canvas id="tetris-canvas" width="200" height="400" style="display: block; margin: 15px auto; border: 2px solid var(--primary-color);"></canvas>
+            </section>
+            
+            <section id="pong" class="tool-section hidden">
+                <h2 data-i18n="pong_title">Понг</h2>
+                <canvas id="pong-canvas" width="300" height="200" style="display: block; margin: 15px auto; border: 2px solid var(--primary-color);"></canvas>
+            </section>
+            
+            <section id="2048" class="tool-section hidden">
+                <h2 data-i18n="2048_title">Блоковый пазл (2048)</h2>
+                <div class="game-grid" style="width: 300px; height: 300px; margin: 15px auto; border: 1px solid var(--border-color);"></div>
+            </section>
+            
+            <section id="sand-sim" class="tool-section hidden">
+                <h2 data-i18n="sand_sim_title">Песочница частиц (Falling Sand)</h2>
+                <canvas id="sand-canvas" width="300" height="300" style="display: block; margin: 15px auto; border: 1px solid var(--border-color);"></canvas>
+            </section>
+            
+            <section id="perceptron" class="tool-section hidden">
+                <h2 data-i18n="perc_title">Простая нейросеть-демонстрация (Перцептрон)</h2>
+                <p data-i18n="perc_note">Обучение логике AND/OR</p>
+                <button class="action-button" data-i18n="perc_train_btn">Обучить</button>
+            </section>
+
+            <section id="window-system" class="tool-section hidden">
+                <h2 data-i18n="window_system_title">Казуальная оконная система</h2>
+                <button id="open-new-window" class="action-button" data-i18n="window_system_open_btn">Открыть новое окно</button>
+                <div id="desktop-area" style="position: relative; height: 300px; border: 1px solid var(--border-color); margin-top: 15px;">
                     </div>
-                    <div class="app-icon" data-app="messages">
-                        <div class="icon-wrapper">
-                            <img src="./public/images/Icons/harmonyos_icon/messages.png" alt="Сообщения">
-                        </div>
-                        <span>Сообщения</span>
+            </section>
+
+            <section id="os-mockup" class="tool-section hidden">
+                <h2 data-i18n="os_mockup_title">Проверка Динамических Анимаций (OS Mockup)</h2>
+                <p class="note" data-i18n="os_mockup_note">Нажмите на иконку, чтобы открыть приложение. Тяните окно вниз от центра экрана, чтобы закрыть его жестом.</p>
+                <div class="mockup-container">
+                    <div class="app-icon" data-app="app-1" style="left: 20px;">🌐</div>
+                    <div class="app-icon" data-app="app-2" style="left: 90px;">⚙️</div>
+                    <div class="app-icon" data-app="app-3" style="left: 160px;">📧</div>
+                    
+                    <div id="app-window-container"></div>
+                    <div class="gesture-bar"></div>
+                </div>
+            </section>
+
+            <section id="browser" class="tool-section hidden">
+                <h2 data-i18n="browser_title">Браузер-Заглушка + Симуляция Загрузок</h2>
+                <div class="browser-mockup">
+                    <div class="browser-header">
+                        <div class="browser-btn red"></div>
+                        <div class="browser-btn yellow"></div>
+                        <div class="browser-btn green"></div>
+                        <input type="text" class="address-bar" value="https://multitool.quandz.dev" disabled>
+                        <button class="browser-nav-btn" id="show-downloads">⬇️</button>
                     </div>
-                    <div class="app-icon" data-app="music">
-                        <div class="icon-wrapper">
-                            <img src="./public/images/Icons/harmonyos_icon/music.png" alt="Музыка">
-                        </div>
-                        <span>Музыка</span>
+                    
+                    <div class="browser-screen" id="web-view">
+                        <h3 data-i18n="browser_welcome_title">Добро пожаловать в МультиБраузер!</h3>
+                        <p data-i18n="browser_note">Это заглушка. Вы можете симулировать скачивание файлов.</p>
+                        <button id="simulate-download-btn" class="action-button button-success" data-i18n="browser_simulate_btn">Симулировать Загрузку Файла</button>
                     </div>
-                    <div class="app-icon" data-app="gallery">
-                        <div class="icon-wrapper">
-                            <img src="./public/images/Icons/harmonyos_icon/gallery.png" alt="Галерея">
-                        </div>
-                        <span>Галерея</span>
-                    </div>
-                    <div class="app-icon" data-app="calculator">
-                        <div class="icon-wrapper">
-                            <img src="./public/images/Icons/harmonyos_icon/calculator.png" alt="Калькулятор">
-                        </div>
-                        <span>Калькулятор</span>
-                    </div>
-                    <div class="app-icon" data-app="calendar">
-                        <div class="icon-wrapper">
-                            <img src="./public/images/Icons/harmonyos_icon/calendar.png" alt="Календарь">
-                        </div>
-                        <span>Календарь</span>
-                    </div>
-                    <div class="app-icon" data-app="clock">
-                        <div class="icon-wrapper">
-                            <img src="./public/images/Icons/harmonyos_icon/clock.png" alt="Часы">
-                        </div>
-                        <span>Часы</span>
-                    </div>
-                    <div class="app-icon" data-app="compass">
-                        <div class="icon-wrapper">
-                            <img src="./public/images/Icons/harmonyos_icon/compass.png" alt="Компас">
-                        </div>
-                        <span>Компас</span>
-                    </div>
-                    <div class="app-icon" data-app="files">
-                        <div class="icon-wrapper">
-                            <img src="./public/images/Icons/harmonyos_icon/files.png" alt="Файлы">
-                        </div>
-                        <span>Файлы</span>
-                    </div>
-                    <div class="app-icon" data-app="settings">
-                        <div class="icon-wrapper">
-                            <img src="./public/images/Icons/harmonyos_icon/settings.png" alt="Настройки">
-                        </div>
-                        <span>Настройки</span>
+                    
+                    <div class="browser-screen hidden" id="downloads-view">
+                        <h3 data-i18n="browser_downloads_title">Загрузки:</h3>
+                        <ul id="downloads-list">
+                            </ul>
                     </div>
                 </div>
+            </section>
+            
+            <section id="labyrinth" class="tool-section hidden">
+                <h2 data-i18n="lab_title">Генератор Лабиринтов</h2>
+                <canvas id="labyrinth-canvas" width="300" height="300" style="display: block; margin: 15px auto; border: 1px solid var(--border-color);"></canvas>
+            </section>
+            
+            <section id="color-palette" class="tool-section hidden">
+                <h2 data-i18n="pal_title">Генератор Палитр Цветов</h2>
+                <div id="palette-output" style="height: 100px; display: flex;"></div>
+                <button class="action-button" data-i18n="pal_generate_btn">Генерировать</button>
+            </section>
+            
+            <section id="fractal-gen" class="tool-section hidden">
+                <h2 data-i18n="frac_title">Генератор Фракталов</h2>
+                <select><option data-i18n="frac_mandelbrot">Мандельброт</option></select>
+                <canvas id="fractal-canvas" width="300" height="300" style="display: block; margin: 15px auto; border: 1px solid var(--border-color);"></canvas>
+            </section>
+            
+            <section id="archiver" class="tool-section hidden">
+                <h2 data-i18n="arch_title">Сжимающий архиватор LZW/DEFLATE</h2>
+                <textarea rows="5" data-i18n-placeholder="arch_input_placeholder" placeholder="Введите текст для сжатия"></textarea>
+                <button class="action-button" data-i18n="arch_compress_btn">Сжать $\rightarrow$</button>
+            </section>
+            
+            <section id="text-analyzer" class="tool-section hidden">
+                <h2 data-i18n="text_anal_title">Анализатор текста</h2>
+                <textarea rows="5" data-i18n-placeholder="text_anal_input_placeholder" placeholder="Введите текст для анализа"></textarea>
+                <button class="action-button" data-i18n="text_anal_analyze_btn">Анализировать</button>
+                <p data-i18n="text_anal_output_label">Частотность слов: ...</p>
+            </section>
+            
+            <section id="pattern-gen" class="tool-section hidden">
+                <h2 data-i18n="pat_gen_title">Генератор паттернов</h2>
+                <select><option>Noise</option><option>Grid</option></select>
+                <canvas id="pattern-canvas" width="300" height="300" style="display: block; margin: 15px auto; border: 1px solid var(--border-color);"></canvas>
+            </section>
+            
+            <section id="converter" class="tool-section hidden">
+                <h2 data-i18n="conv_title">Конвертер ${^\circ C}$ в ${^\circ F}$</h2>
+                <div class="input-group">
+                    <label for="celsius" data-i18n="conv_celsius_label">Цельсий (${^\circ C}$):</label>
+                    <input type="number" id="celsius" placeholder="Введите температуру">
+                </div>
+                <p><span data-i18n="conv_output_label">Результат в Фаренгейтах</span> (${^\circ F}$): <span id="fahrenheit-output">0</span></p>
+            </section>
 
-                <!-- Док-панель -->
-                <div class="dock">
-                    <div class="dock-icon" data-app="phone">
-                        <img src="./public/images/Icons/harmonyos_icon/phone.png" alt="Телефон">
-                    </div>
-                    <div class="dock-icon" data-app="messages">
-                        <img src="./public/images/Icons/harmonyos_icon/messages.png" alt="Сообщения">
-                    </div>
-                    <div class="dock-icon" data-app="music">
-                        <img src="./public/images/Icons/harmonyos_icon/music.png" alt="Музыка">
-                    </div>
-                    <div class="dock-icon" data-app="settings">
-                        <img src="./public/images/Icons/harmonyos_icon/settings.png" alt="Настройки">
-                    </div>
+            <section id="counter" class="tool-section hidden">
+                <h2 data-i18n="counter_title">Счетчик Слов и Символов</h2>
+                <textarea id="text-input" rows="5" data-i18n-placeholder="counter_placeholder" placeholder="Введите текст здесь..."></textarea>
+                <div class="results">
+                    <p><span data-i18n="counter_chars">Символов:</span> <span id="char-count">0</span></p>
+                    <p><span data-i18n="counter_words">Слов:</span> <span id="word-count">0</span></p>
                 </div>
-            </div>
+            </section>
+            
+            <section id="calculator" class="tool-section hidden">
+                <h2 data-i18n="nav_calculator">Простой Калькулятор</h2>
+                <div class="calculator-grid">
+                    <input type="text" id="calc-display" value="0" disabled>
+                    <button class="calc-btn span-2 action-btn" data-action="clear">AC</button>
+                    <button class="calc-btn action-btn" data-action="delete">DEL</button>
+                    <button class="calc-btn operation" data-value="/">/</button>
 
-            <!-- Окно приложения -->
-            <div id="app-window" class="screen app-window hidden">
-                <div class="app-header">
-                    <button class="back-btn">←</button>
-                    <h2 class="app-title">Приложение</h2>
+                    <button class="calc-btn number" data-value="7">7</button>
+                    <button class="calc-btn number" data-value="8">8</button>
+                    <button class="calc-btn number" data-value="9">9</button>
+                    <button class="calc-btn operation" data-value="*">*</button>
+
+                    <button class="calc-btn number" data-value="4">4</button>
+                    <button class="calc-btn number" data-value="5">5</button>
+                    <button class="calc-btn number" data-value="6">6</button>
+                    <button class="calc-btn operation" data-value="-">-</button>
+
+                    <button class="calc-btn number" data-value="1">1</button>
+                    <button class="calc-btn number" data-value="2">2</button>
+                    <button class="calc-btn number" data-value="3">3</button>
+                    <button class="calc-btn operation" data-value="+">+</button>
+                    
+                    <button class="calc-btn number span-2" data-value="0">0</button>
+                    <button class="calc-btn number" data-value=".">.</button>
+                    <button class="calc-btn operation equals" data-action="calculate">=</button>
                 </div>
-                <div class="app-content">
-                    <!-- Контент приложения будет загружаться здесь -->
+            </section>
+
+            <section id="tictactoe" class="tool-section hidden">
+                <h2 data-i18n="nav_tictactoe">Крестики-Нолики</h2>
+                <div class="tictactoe-controls">
+                    <select id="tictactoe-mode">
+                        <option value="pvp" data-i18n="ttt_mode_pvp">Игрок vs Игрок</option>
+                        <option value="pva" data-i18n="ttt_mode_pva">Игрок vs AI</option>
+                        <option value="ava" data-i18n="ttt_mode_ava">AI vs AI</option>
+                    </select>
+                    <select id="ttt-difficulty-preset">
+                        <option value="80" data-i18n="ttt_diff_medium">Средняя</option>
+                        <option value="20" data-i18n="ttt_diff_easy">Легкая</option>
+                        <option value="100" data-i18n="ttt_diff_hard">Невозможная</option>
+                    </select>
+                    <button id="tictactoe-reset" class="action-button button-success" data-i18n="timer_reset_btn">Сброс</button>
                 </div>
-            </div>
+                <p data-i18n="ttt_current_turn">Текущий ход: <span id="tictactoe-status">X</span></p>
+                <div id="tictactoe-board" class="tictactoe-board"></div>
+            </section>
+
+            <section id="snake" class="tool-section hidden">
+                <h2 data-i18n="nav_snake">Змейка (AI-режим)</h2>
+                <div class="snake-settings">
+                    <label for="ai-difficulty" data-i18n="snake_difficulty_label">Сложность AI (0-100):</label>
+                    <input type="range" id="ai-difficulty" min="0" max="100" value="40" style="width: 150px;">
+                    <span id="ai-difficulty-value">40</span>
+                    <label for="food-skin" data-i18n="snake_food_label">Скин еды:</label>
+                    <select id="food-skin">
+                        <option value="red" data-emoji="🍎">🍎</option>
+                        <option value="yellow" data-emoji="🍌">🍌</option>
+                        <option value="green" data-emoji="🍐">🍐</option>
+                        <option value="orange" data-emoji="🍊">🍊</option>
+                    </select>
+                    <label for="game-seed" data-i18n="snake_seed_label">Сид:</label>
+                    <input type="text" id="game-seed" value="12345" placeholder="Введите сид" style="width: 100px;">
+                </div>
+                <div class="snake-controls">
+                    <button id="snake-start" class="action-button button-success" data-i18n="snake_start_btn">Старт AI</button>
+                    <p><span data-i18n="snake_score_label">Счет:</span> <span id="snake-score">0</span> | <span data-i18n="snake_deaths_label">Смертей:</span> <span id="death-count">0</span> | <span data-i18n="snake_ai_level_label">AI Level:</span> <span id="ai-level">0</span></p>
+                </div>
+                <canvas id="snake-canvas" width="300" height="300"></canvas>
+            </section>
+
+            <section id="bytebeat" class="tool-section hidden">
+                <h2 data-i18n="nav_bytebeat">Bytebeat & Аудио Визуализатор</h2>
+                <div class="bytebeat-controls">
+                    <label for="visualizer-style" data-i18n="bytebeat_style_label">Стиль визуализации:</label>
+                    <select id="visualizer-style">
+                        <option value="bars" data-i18n="bytebeat_style_bars">Столбцы (Bars)</option>
+                        <option value="wave" data-i18n="bytebeat_style_wave">Волна (Waveform)</option>
+                        <option value="dots" data-i18n="bytebeat_style_dots">Точки (Dots)</option>
+                        <option value="mirror" data-i18n="bytebeat_style_mirror">Зеркальные Столбцы</option>
+                    </select>
+                </div>
+                <hr>
+                <h3 data-i18n="bytebeat_generator_title">Генератор Bytebeat</h3>
+                <div class="input-group">
+                    <label for="bytebeat-code" data-i18n="bytebeat_formula_label">Bytebeat Формула</label>
+                    <input type="text" id="bytebeat-code" value="(t*4)&(t>>11)">
+                </div>
+                <div class="bytebeat-controls">
+                    <button id="bytebeat-generate" class="action-button button-success" data-i18n="bytebeat_generate_btn">Сгенерировать Код</button>
+                    <button id="bytebeat-remix" class="action-button" data-i18n="bytebeat_remix_btn">Ремикс Кода</button>
+                </div>
+                <div class="bytebeat-controls">
+                    <label for="sample-rate-select" data-i18n="bytebeat_sample_rate_label">Четкость Звука (Hz):</label>
+                    <select id="sample-rate-select" style="width: 150px;">
+                        <option value="44100" data-i18n="bytebeat_rate_high">44100 Hz (Высокая)</option>
+                        <option value="8000" data-i18n="bytebeat_rate_low">8000 Hz (Низкая / Эффект Говна)</option>
+                    </select>
+                    <button id="bytebeat-play" class="action-button button-success" data-i18n="bytebeat_play_btn">Играть Bytebeat</button>
+                    <button id="bytebeat-stop" class="action-button button-danger" data-i18n="timer_stop_btn">Стоп</button>
+                </div>
+                <hr>
+                <h3 data-i18n="bytebeat_audio_file_title">Визуализатор для Аудио Файла</h3>
+                <div class="input-group">
+                    <label for="audio-file-input" data-i18n="bytebeat_audio_file_label">Выберите MP3/WAV файл:</label>
+                    <input type="file" id="audio-file-input" accept="audio/*">
+                    <button id="audio-play" class="action-button" data-i18n="bytebeat_audio_play_btn">Воспроизвести и Визуализировать</button>
+                </div>
+                <p class="note" data-i18n="bytebeat_visualizer_note">Визуализатор:</p>
+                <canvas id="bytebeat-visualizer" width="500" height="150"></canvas>
+            </section>
+
+            <section id="todo" class="tool-section hidden">
+                <h2 data-i18n="nav_todo">Менеджер Задач (To-Do List)</h2>
+                <div class="input-group todo-input-group">
+                    <input type="text" id="new-task-input" data-i18n-placeholder="todo_placeholder" placeholder="Введите новую задачу">
+                    <button id="add-task-btn" class="action-button button-success" data-i18n="todo_add_btn">Добавить</button>
+                </div>
+                <ul id="todo-list" class="todo-list"></ul>
+            </section>
+            
+            <section id="window-system" class="tool-section hidden">
+                <h2 data-i18n="window_system_title">Казуальная оконная система</h2>
+                <button id="open-new-window" class="action-button" data-i18n="window_system_open_btn">Открыть новое окно</button>
+                <div id="desktop-area" style="position: relative; height: 300px; border: 1px solid var(--border-color); margin-top: 15px;">
+                    </div>
+            </section>
+            
+            <section id="notepad" class="tool-section hidden"><h2 data-i18n="notepad_title">Мини-блокнот</h2><textarea id="notepad-area" rows="10" data-i18n-placeholder="notepad_placeholder" placeholder="Ваши заметки сохраняются локально..."></textarea></section>
+            <section id="code-encrypt" class="tool-section hidden"><h2 data-i18n="cipher_title">Шифратор/Дешифратор</h2><select id="cipher-type"><option value="caesar">Caesar</option><option value="vigenere">Vigenère</option></select><input type="text" id="cipher-key" data-i18n-placeholder="cipher_key_placeholder" placeholder="Ключ/Сдвиг"><textarea id="cipher-input" rows="5"></textarea><button id="run-cipher" class="action-button" data-i18n="cipher_encrypt_btn">Зашифровать</button><textarea id="cipher-output" rows="5" readonly></textarea></section>
+            <section id="hasher" class="tool-section hidden"><h2 data-i18n="hash_title">Хешер</h2><select id="hash-type"><option value="md5">MD5</option><option value="sha256">SHA256</option></select><input type="text" id="hash-input" data-i18n-placeholder="hash_placeholder" placeholder="Введите текст"><p><span data-i18n="hash_output_label">Хеш:</span> <span id="hash-output"></span></p></section>
+            <section id="random-gen" class="tool-section hidden"><h2 data-i18n="rand_title">Генератор случайных значений</h2><button id="generate-number" class="action-button" data-i18n="rand_number_btn">Число</button><button id="generate-color" class="action-button" data-i18n="rand_color_btn">Цвет</button><p id="random-output"></p></section>
+            <section id="image-editor" class="tool-section hidden"><h2 data-i18n="img_editor_title">Редактор изображений</h2><input type="file" accept="image/*"><p data-i18n="img_editor_tools">Обрезка, Масштаб</p></section>
+            <section id="image-converter" class="tool-section hidden"><h2 data-i18n="img_converter_title">Конвертер изображений</h2><input type="file" accept="image/*"><select><option>PNG $\rightarrow$ JPG</option></select><button class="action-button" data-i18n="img_converter_convert_btn">Конвертировать</button></section>
+            <section id="audio-generator" class="tool-section hidden"><h2 data-i18n="aud_gen_title">Аудио-Генерация (Sine/Square)</h2><canvas id="audio-wave-canvas" width="300" height="100"></canvas><button class="action-button" data-i18n="aud_gen_play_btn">Play Tone</button></section>
+            <section id="video-player" class="tool-section hidden"><h2 data-i18n="vid_player_title">Видеоплеер</h2><input type="file" accept="video/*"><video controls style="width: 100%; max-height: 200px;"></video></section>
+            <section id="tetris" class="tool-section hidden"><h2 data-i18n="tetris_title">Тетрис</h2><canvas id="tetris-canvas" width="200" height="400" style="display: block; margin: 15px auto; border: 2px solid var(--primary-color);"></canvas></section>
+            <section id="pong" class="tool-section hidden"><h2 data-i18n="pong_title">Понг</h2><canvas id="pong-canvas" width="300" height="200" style="display: block; margin: 15px auto; border: 2px solid var(--primary-color);"></canvas></section>
+            <section id="2048" class="tool-section hidden"><h2 data-i18n="2048_title">Блоковый пазл (2048)</h2><div class="game-grid" style="width: 300px; height: 300px; margin: 15px auto; border: 1px solid var(--border-color);"></div></section>
+            <section id="sand-sim" class="tool-section hidden"><h2 data-i18n="sand_sim_title">Песочница частиц (Falling Sand)</h2><canvas id="sand-canvas" width="300" height="300" style="display: block; margin: 15px auto; border: 1px solid var(--border-color);"></canvas></section>
+            <section id="perceptron" class="tool-section hidden"><h2 data-i18n="perc_title">Простая нейросеть-демонстрация (Перцептрон)</h2><p data-i18n="perc_note">Обучение логике AND/OR</p><button class="action-button" data-i18n="perc_train_btn">Обучить</button></section>
+            <section id="labyrinth" class="tool-section hidden"><h2 data-i18n="lab_title">Генератор Лабиринтов</h2><canvas id="labyrinth-canvas" width="300" height="300" style="display: block; margin: 15px auto; border: 1px solid var(--border-color);"></canvas></section>
+            <section id="color-palette" class="tool-section hidden"><h2 data-i18n="pal_title">Генератор Палитр Цветов</h2><div id="palette-output" style="height: 100px; display: flex;"></div><button class="action-button" data-i18n="pal_generate_btn">Генерировать</button></section>
+            <section id="fractal-gen" class="tool-section hidden"><h2 data-i18n="frac_title">Генератор Фракталов</h2><select><option data-i18n="frac_mandelbrot">Мандельброт</option></select><canvas id="fractal-canvas" width="300" height="300" style="display: block; margin: 15px auto; border: 1px solid var(--border-color);"></canvas></section>
+            <section id="archiver" class="tool-section hidden"><h2 data-i18n="arch_title">Сжимающий архиватор LZW/DEFLATE</h2><textarea rows="5" data-i18n-placeholder="arch_input_placeholder" placeholder="Введите текст для сжатия"></textarea><button class="action-button" data-i18n="arch_compress_btn">Сжать $\rightarrow$</button></section>
+            <section id="text-analyzer" class="tool-section hidden"><h2 data-i18n="text_anal_title">Анализатор текста</h2><textarea rows="5" data-i18n-placeholder="text_anal_input_placeholder" placeholder="Введите текст для анализа"></textarea><button class="action-button" data-i18n="text_anal_analyze_btn">Анализировать</button><p data-i18n="text_anal_output_label">Частотность слов: ...</p></section>
+            <section id="pattern-gen" class="tool-section hidden"><h2 data-i18n="pat_gen_title">Генератор паттернов</h2><select><option>Noise</option><option>Grid</option></select><canvas id="pattern-canvas" width="300" height="300" style="display: block; margin: 15px auto; border: 1px solid var(--border-color);"></canvas></section>
+
         </div>
-    </div>
-
-    <script src="script.js"></script>
+    </main>
+    
+    <script src="ai.js"></script>
+    <script src="logic.js"></script>
+    <script src="script.js"></script> 
 </body>
 </html>
