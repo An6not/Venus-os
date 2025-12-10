@@ -1,39 +1,381 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title data-i18n="title">Мультитул | Версия 0.8 Альфа</title>
-    <link rel="stylesheet" href="if.css"> 
-    <link rel="stylesheet" href="style.css"> 
-</head>
-<body data-theme="dark">
-
-    <header>
-        <h1 data-i18n="header_title">Мультитул | 0.8 Альфа 🚀</h1>
-    </header>
-
-    <main class="container">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blocky World Mobile Screenshot</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Use Inter font -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
         
-        <div class="top-controls">
-            <div id="status-panel" class="status-panel">
-                <span data-i18n="cpu_label">CPU:</span> <span id="cpu-load">0%</span>
-                <span data-i18n="ram_label">RAM:</span> <span id="ram-used">0 MB</span> / 1024 MB
-            </div>
-            
-            <div class="settings-bar">
-                <button id="toggle-theme" class="action-button" data-i18n="toggle_theme_btn">💡 Сменить тему</button>
-                <select id="language-switcher" class="action-button">
-                    <option value="ru">Русский</option>
-                    <option value="en">English</option>
-                    <option value="uk">Українська</option>
-                    <option value="lt">Lietuvių</option>
-                </select>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 1rem;
+        }
+
+        /* Container for the game view - ensures it's centered and responsive */
+        .game-container {
+            position: relative;
+            max-width: 600px; /* Max size for the viewport simulation */
+            width: 100%;
+            aspect-ratio: 16 / 9; /* Standard widescreen aspect ratio */
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            border: 4px solid #1f2937;
+            background-color: #000;
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+
+        #gameCanvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        /* General style for controls overlay */
+        .control-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none; /* Allows clicks to pass through if needed, but buttons will intercept */
+        }
+
+        /* Crosshair Styling (Centered Plus Sign) */
+        .crosshair {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 32px;
+            height: 32px;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+
+        .crosshair::before,
+        .crosshair::after {
+            content: '';
+            position: absolute;
+            background-color: white;
+            opacity: 0.8;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.7);
+        }
+
+        /* Vertical bar */
+        .crosshair::before {
+            width: 4px;
+            height: 16px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        /* Horizontal bar */
+        .crosshair::after {
+            width: 16px;
+            height: 4px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        /* Mobile Button Styling */
+        .mobile-button {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 50px;
+            height: 50px;
+            border-radius: 9999px; /* Fully rounded */
+            background-color: rgba(255, 255, 255, 0.2); /* Transparent white */
+            color: white;
+            font-size: 1.25rem;
+            font-weight: bold;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            cursor: pointer;
+            transition: background-color 0.1s, transform 0.1s;
+            pointer-events: auto; /* Buttons should be clickable */
+            user-select: none;
+        }
+
+        .mobile-button:active {
+            background-color: rgba(255, 255, 255, 0.5);
+            transform: scale(0.95);
+        }
+
+        /* D-Pad specific layout */
+        .dpad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 5px;
+            width: 150px;
+            height: 150px;
+        }
+
+        /* D-pad button placement in the grid */
+        .dpad > :nth-child(1) { grid-area: 2 / 1 / 3 / 2; } /* Left */
+        .dpad > :nth-child(2) { grid-area: 1 / 2 / 2 / 3; } /* Up */
+        .dpad > :nth-child(3) { grid-area: 2 / 3 / 3 / 4; } /* Right */
+        .dpad > :nth-child(4) { grid-area: 3 / 2 / 4 / 3; } /* Down */
+    </style>
+</head>
+<body>
+
+    <div class="game-container">
+        <!-- Canvas for the Blocky World Render -->
+        <canvas id="gameCanvas"></canvas>
+
+        <!-- Control Overlay Container -->
+        <div class="control-overlay">
+
+            <!-- 1. Centered Crosshair -->
+            <div class="crosshair"></div>
+
+            <!-- 2. FULLSCREEN Button (Top-Left) -->
+            <button id="fullscreen-btn" class="absolute top-4 left-4 p-2 text-white bg-gray-800/50 hover:bg-gray-700/70 rounded-lg shadow-lg flex items-center justify-center text-sm font-semibold pointer-events-auto transition">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5m-5 0v11m0 0H8m0 0l-5 5m11-1V4m0 0h-4m4 0l-5 5m-5 0v11m0 0H8m0 0l-5 5" />
+                </svg>
+                FULLSCREEN
+            </button>
+
+
+            <!-- Mobile Controls (Bottom) -->
+            <div class="absolute bottom-4 w-full flex justify-between px-4">
+                
+                <!-- D-Pad (Bottom-Left) -->
+                <div class="dpad pointer-events-auto">
+                    <button class="mobile-button" onclick="logAction('Move Left')">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+                    </button>
+                    <button class="mobile-button" onclick="logAction('Move Up')">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 10l7-7m0 0l7 7m-7-7v18" /></svg>
+                    </button>
+                    <div class="w-full h-full"></div> <!-- Empty space -->
+                    <button class="mobile-button" onclick="logAction('Move Right')">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+                    </button>
+                    <button class="mobile-button" onclick="logAction('Move Down')">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 14l-7 7m0 0l-7-7m7 7V3" /></svg>
+                    </button>
+                </div>
+
+                <!-- A/B Action Buttons (Bottom-Right) -->
+                <div class="flex flex-col items-end justify-end space-y-4 pointer-events-auto">
+                    <button class="mobile-button w-[70px] h-[70px]" onclick="logAction('Action A: Jump/Place')">A</button>
+                    <button class="mobile-button w-[70px] h-[70px]" onclick="logAction('Action B: Interact/Mine')">B</button>
+                </div>
             </div>
         </div>
+    </div>
 
-        <nav class="tool-navigation">
-            <button class="nav-button active" data-tool="password-gen" data-i18n="nav_password_gen">Генератор Паролей</button>
+    <!-- Message Box for Console Output -->
+    <div id="message-box" class="fixed top-0 right-0 m-4 p-3 bg-green-600 text-white rounded-lg shadow-xl opacity-0 transition-opacity duration-300 pointer-events-none">
+        Action: Logged!
+    </div>
+
+    <script>
+        // Global utility function for logging control actions
+        function logAction(message) {
+            console.log(`[Control] ${message}`);
+            const msgBox = document.getElementById('message-box');
+            msgBox.textContent = `Action: ${message}`;
+            msgBox.classList.remove('bg-green-600', 'bg-blue-600');
+            msgBox.classList.add(message.includes('FULLSCREEN') ? 'bg-blue-600' : 'bg-green-600');
+            msgBox.classList.add('opacity-100');
+            setTimeout(() => {
+                msgBox.classList.remove('opacity-100');
+            }, 1500);
+        }
+
+        // --- CANVAS RENDERING LOGIC ---
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Colors for the blocky scene
+        const COLORS = {
+            SKY: '#78C1F3',
+            CLOUD: '#FFFFFF',
+            GRASS_TOP: '#64A44D',
+            GRASS_SIDE: '#74B460',
+            DIRT: '#96705D',
+            LEAVES: '#2A5D2A',
+            TRUNK: '#795548',
+        };
+
+        // Block size simulation (how many "pixels" per block in the canvas)
+        const BLOCK_SIZE = 16;
+        
+        /**
+         * Draws a single block at canvas coordinates (x, y) with a given color.
+         * @param {number} x X-coordinate (in blocks)
+         * @param {number} y Y-coordinate (in blocks)
+         * @param {string} color Hex color string
+         */
+        function drawBlock(x, y, color, size = BLOCK_SIZE) {
+            ctx.fillStyle = color;
+            ctx.fillRect(x * size, y * size, size, size);
+            
+            // Add block texture simulation (darker lines)
+            ctx.strokeStyle = 'rgba(0, 0, 0, 0.1)';
+            ctx.lineWidth = 1;
+            ctx.strokeRect(x * size, y * size, size, size);
+        }
+
+        /**
+         * Draws the main blocky scene: sky, clouds, and terrain layers.
+         */
+        function drawScene() {
+            if (!canvas.width || !canvas.height) return;
+
+            const w = canvas.width;
+            const h = canvas.height;
+            
+            // Calculate block dimensions based on current canvas size (e.g., 40 blocks wide)
+            const blocksWide = 40;
+            const size = w / blocksWide;
+            const blocksHigh = Math.ceil(h / size);
+            const halfHeight = Math.floor(blocksHigh * 0.5);
+
+            // 1. Sky and Clouds
+            ctx.fillStyle = COLORS.SKY;
+            ctx.fillRect(0, 0, w, h);
+
+            // Simple block clouds
+            const cloudPattern = [
+                { x: 5, y: 4, w: 2, h: 1 }, { x: 8, y: 5, w: 3, h: 1 },
+                { x: 28, y: 3, w: 4, h: 2 }, { x: 34, y: 5, w: 2, h: 1 },
+            ];
+
+            cloudPattern.forEach(c => {
+                for (let i = 0; i < c.w; i++) {
+                    for (let j = 0; j < c.h; j++) {
+                        drawBlock((c.x + i) * blocksWide/40, (c.y + j) * blocksHigh/20, COLORS.CLOUD, size);
+                    }
+                }
+            });
+
+            // 2. Terrain Generation Simulation
+            const groundLevel = blocksHigh - 6; // Y-coordinate for the base ground
+            
+            // A simple heightmap simulation for hills
+            const heightMap = Array(blocksWide).fill(groundLevel).map((base, i) => {
+                // Creates a few smooth hills
+                const hill1 = Math.sin(i / 10) * 2;
+                const hill2 = Math.cos(i / 5) * 1.5;
+                return Math.floor(base + hill1 + hill2 + 1);
+            });
+            
+            // Draw terrain from bottom up
+            for (let x = 0; x < blocksWide; x++) {
+                let currentHeight = heightMap[x];
+                
+                // Draw layers below the grass block
+                for (let y = currentHeight + 1; y < blocksHigh; y++) {
+                    drawBlock(x, y, COLORS.DIRT, size);
+                }
+
+                // Draw the top block (Grass with dirt side)
+                drawBlock(x, currentHeight, COLORS.GRASS_TOP, size);
+            }
+
+            // 3. Trees (Cross-shaped 3D simulation)
+            const trees = [
+                { x: 8, y: heightMap[8] - 1 },
+                { x: 15, y: heightMap[15] - 1 },
+                { x: 25, y: heightMap[25] - 1 },
+                { x: 33, y: heightMap[33] - 1 }
+            ];
+
+            trees.forEach(tree => {
+                const trunkX = tree.x;
+                const trunkY = tree.y;
+                
+                // Draw Trunk (3 blocks high)
+                for(let i = 0; i < 3; i++) {
+                    drawBlock(trunkX, trunkY - i, COLORS.TRUNK, size);
+                }
+                
+                // Draw Canopy (Cross-shaped 3D layers simulation)
+                const canopyHeight = 3;
+                const canopyRadius = 2;
+                const baseTrunkY = trunkY - 2;
+
+                for (let yOffset = 0; yOffset < canopyHeight; yOffset++) {
+                    for (let xOffset = -canopyRadius; xOffset <= canopyRadius; xOffset++) {
+                        for (let zOffset = -canopyRadius; zOffset <= canopyRadius; zOffset++) {
+                            // Simple distance check to simulate a spherical/blocky crown
+                            const distSq = xOffset*xOffset + zOffset*zOffset;
+                            
+                            // Check for block placement (simulate cross shape by skipping corners on some layers)
+                            if (distSq <= canopyRadius * canopyRadius) {
+                                // Simulate 3D by placing the block slightly offset/larger for visual effect
+                                if (yOffset === 0 && distSq > 4) continue; // narrower base
+                                
+                                // The block is drawn at trunkX + xOffset, and trunkY - 3 - yOffset
+                                // We simplify the z-dimension into a visual effect on the x-axis for 2D perspective
+                                const drawX = trunkX + xOffset + (zOffset * 0.2); 
+                                const drawY = baseTrunkY - yOffset;
+
+                                // Make the main foliage color
+                                let color = COLORS.LEAVES;
+
+                                if (drawX >= 0 && drawX < blocksWide && drawY >= 0) {
+                                     drawBlock(drawX, drawY, color, size * 1.05); // Slightly larger for foliage
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        /**
+         * Resize the canvas and redraw the scene.
+         */
+        function resizeCanvas() {
+            const container = canvas.parentElement;
+            canvas.width = container.clientWidth;
+            canvas.height = container.clientHeight;
+            drawScene();
+        }
+
+        // --- FULLSCREEN LOGIC ---
+        const fullscreenBtn = document.getElementById('fullscreen-btn');
+        const gameContainer = document.querySelector('.game-container');
+
+        fullscreenBtn.addEventListener('click', () => {
+            logAction('FULLSCREEN Toggle');
+            if (document.fullscreenElement) {
+                document.exitFullscreen();
+            } else if (gameContainer.requestFullscreen) {
+                gameContainer.requestFullscreen();
+            }
+        });
+
+        // Initialize
+        window.onload = () => {
+            // Initial draw
+            resizeCanvas();
+        };
+
+        // Redraw on window resize to maintain block proportion
+        window.addEventListener('resize', resizeCanvas);
+        
+    </script>
+</body>
+</html>
+
             <button class="nav-button" data-tool="qr-generator" data-i18n="nav_qr_generator">QR/Штрих-код</button>
             <button class="nav-button" data-tool="uuid-gen" data-i18n="nav_uuid_gen">UUID/Никнеймы</button>
             <button class="nav-button" data-tool="random-gen" data-i18n="nav_random_gen">Генератор Значений</button>
