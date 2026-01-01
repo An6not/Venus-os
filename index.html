@@ -2,39 +2,124 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Phone OS Pro</title>
-    <style>
-        /* --- БАЗА --- */
-        body {
-            background-color: #f2f2f2;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
-            overflow: hidden;
-            -webkit-tap-highlight-color: transparent;
-        }
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Phone OS Gesture Pro</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
-        /* --- КОРПУС --- */
-        .phone {
-            width: 320px;
-            height: 650px;
-            background: #111;
-            border-radius: 50px;
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5), inset 0 0 0 3px #222;
-            position: relative;
-            padding: 12px;
-            box-sizing: border-box;
-            z-index: 1;
-        }
+    <div class="phone">
+        <!-- Физические кнопки -->
+        <div class="btn-side btn-power"></div>
+        <div class="btn-side btn-vol-up"></div>
+        <div class="btn-side btn-vol-down"></div>
 
-        /* Кнопки корпуса */
-        .btn-side { position: absolute; background: #222; border-radius: 2px; }
-        .btn-power { top: 180px; right: -3px; width: 3px; height: 60px; }
-        .btn-vol-up { top: 140px; left: -3px; width: 3px; height: 40px; }
+        <div class="screen" id="screen">
+            
+            <!-- Dynamic Island и Статус бар (Всегда поверх) -->
+            <div class="overlay-layer">
+                <div class="status-bar">
+                    <span id="clock">12:00</span>
+                    <div class="signal-battery">
+                        <svg width="18" height="12" fill="white" viewBox="0 0 24 24"><path d="M12 2C7 2 2.8 5.4 1.2 10.2c-.3.8-.3 1.7 0 2.6C2.8 17.6 7 21 12 21s9.2-3.4 10.8-8.2c.3-.8.3-1.7 0-2.6C21.2 5.4 17 2 12 2zm0 15c-3.3 0-6-2.7-6-6s2.7-6 6-6 6 2.7 6 6-2.7 6-6 6z"/></svg>
+                        <span>100</span>
+                    </div>
+                </div>
+                <div class="island" id="island"></div>
+            </div>
+
+            <!-- Рабочий стол -->
+            <div class="home-screen" id="homeScreen">
+                <div class="app-grid">
+                    <!-- Иконки -->
+                    <div class="app-item" data-app="settings">
+                        <div class="app-icon bg-grey">
+                            <svg viewBox="0 0 24 24"><path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.07,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.47-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/></svg>
+                        </div>
+                        <div class="app-name">Settings</div>
+                    </div>
+
+                    <div class="app-item" data-app="photos">
+                        <div class="app-icon" style="background:white;">
+                             <svg viewBox="0 0 24 24" style="fill:none; stroke:none;"><path fill="#FF3B30" d="M12 7a5 5 0 0 1-5 5V7h5z"/><path fill="#FF9500" d="M12 7a5 5 0 0 0 5 5V7h-5z"/><path fill="#007AFF" d="M12 17a5 5 0 0 1 5-5v5h-5z"/><path fill="#4CD964" d="M12 17a5 5 0 0 0-5-5v5h5z"/></svg>
+                        </div>
+                        <div class="app-name">Photos</div>
+                    </div>
+
+                     <div class="app-item" data-app="weather">
+                        <div class="app-icon bg-blue">
+                            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/><path d="M12 6c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm0 10c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4z"/></svg>
+                        </div>
+                        <div class="app-name">Weather</div>
+                    </div>
+                     <div class="app-item" data-app="music">
+                        <div class="app-icon bg-red">
+                            <svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
+                        </div>
+                        <div class="app-name">Music</div>
+                    </div>
+                </div>
+
+                <!-- Док -->
+                <div class="dock">
+                    <div class="app-item" data-app="phone">
+                        <div class="app-icon bg-green"><svg viewBox="0 0 24 24"><path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56-.35-.12-.74-.03-1.01.24l-1.57 1.97c-2.83-1.44-5.15-3.75-6.59-6.59l1.97-1.57c.26-.27.35-.66.24-1.01-.37-1.11-.56-2.3-.56-3.53 0-.55-.45-1-1-1H4.39c-.55 0-1 .45-1 1 0 8.73 7.14 15.87 15.87 15.87.55 0 1-.45 1-1v-3.51c0-.55-.45-1-1-1z"/></svg></div>
+                    </div>
+                    <div class="app-item" data-app="safari">
+                        <div class="app-icon bg-white"><svg viewBox="0 0 24 24" fill="#007AFF"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm2.12 14.12l-1.06 1.06L10.59 12l2.47-5.18 1.06 1.06L16.65 10l-2.53 6.12z"/></svg></div>
+                    </div>
+                    <div class="app-item" data-app="messages">
+                        <div class="app-icon bg-green"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg></div>
+                    </div>
+                    <div class="app-item" data-app="camera">
+                        <div class="app-icon bg-dark"><svg viewBox="0 0 24 24"><path d="M9 3L7.17 5H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2h-3.17L15 3H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ОКНО ПРИЛОЖЕНИЯ (Один контейнер для всех) -->
+            <div class="app-window" id="appWindow">
+                <div class="app-content-inner" id="appContent">
+                    <!-- Сюда JS загрузит контент -->
+                </div>
+            </div>
+
+            <!-- Интерактивная полоса жестов -->
+            <div class="home-bar-area" id="homeBarArea">
+                <div class="home-bar" id="homeBar"></div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ШАБЛОНЫ ПРИЛОЖЕНИЙ -->
+    <template id="tpl-settings">
+        <div class="settings-ui">
+            <h1>Настройки</h1>
+            <div class="search-box">🔍 Поиск</div>
+            <div class="group">
+                <div class="row">✈️ Авиарежим <div class="toggle"></div></div>
+                <div class="row">📶 Wi-Fi <span>Keenetic ›</span></div>
+                <div class="row">🦷 Bluetooth <span>Вкл. ›</span></div>
+            </div>
+             <div class="group">
+                <div class="row">⚙️ Основные <span>›</span></div>
+                <div class="row">🎛️ Пункт управления <span>›</span></div>
+            </div>
+        </div>
+    </template>
+
+    <template id="tpl-generic">
+        <div class="generic-ui">
+            <h1 id="genericTitle">App</h1>
+            <div class="skeleton"></div>
+            <div class="skeleton" style="width:60%"></div>
+        </div>
+    </template>
+
+    <script src="script.js"></script>
+</body>
+</html>        .btn-vol-up { top: 140px; left: -3px; width: 3px; height: 40px; }
         .btn-vol-down { top: 190px; left: -3px; width: 3px; height: 40px; }
 
         /* --- ЭКРАН --- */
