@@ -1,67 +1,200 @@
-/* ======================================================== */
-/* === SCRIPT.JS: UI, ОБРАБОТЧИКИ СОБЫТИЙ И РИСОВАНИЕ === */
-/* ======================================================== */
+/* --- КОНСТАНТЫ И ЭЛЕМЕНТЫ --- */
+const screen = document.getElementById('screen');
+const homeScreen = document.getElementById('homeScreen');
+const appWindow = document.getElementById('appWindow');
+const appContent = document.getElementById('appContent');
+const homeBar = document.getElementById('homeBar');
+const homeBarArea = document.getElementById('homeBarArea');
 
-document.addEventListener('DOMContentLoaded', () => {
+// Templates
+const tplSettings = document.getElementById('tpl-settings');
+const tplGeneric = document.getElementById('tpl-generic');
+
+// State
+let activeAppIcon = null; // Элемент иконки, из которой открыли
+let isAppOpen = false;
+let cleanupTimer = null; // Таймер для display: none
+
+/* --- ФУНКЦИИ ОТКРЫТИЯ / ЗАКРЫТИЯ --- */
+
+// Навешиваем клики на все иконки
+document.querySelectorAll('.app-item').forEach(item => {
+    item.addEventListener('click', (e) => {
+        // Защита от открытия, если мы уже тянем жест
+        if(isDragging) return;
+        openApp(item);
+    });
+});
+
+function openApp(iconEl) {
+    // 1. Отмена предыдущей очистки (для спама)
+    if (cleanupTimer) clearTimeout(cleanupTimer);
     
-    // --- I18N DICTIONARY (RU, EN, UK, LT) ---
-    const i18n = {
-        ru: {
-            title: "Мультитул | Версия 0.8 Альфа", header_title: "Мультитул | 0.8 Альфа 🚀",
-            cpu_label: "CPU:", ram_label: "RAM:", toggle_theme_btn: "💡 Сменить тему",
-            
-            nav_password_gen: "Генератор Паролей", nav_qr_generator: "QR/Штрих-код", nav_uuid_gen: "UUID/Никнеймы", nav_random_gen: "Генератор Значений", nav_labyrinth: "Генератор Лабиринтов", nav_color_palette: "Генератор Палитр", nav_fractal_gen: "Генератор Фракталов", nav_pattern_gen: "Генератор Паттернов",
-            nav_mini_ide: "Мини-IDE", nav_json_formatter: "JSON Форматтер", nav_regexp_tester: "RegExp Тестер", nav_base64_converter: "Base64", nav_code_encrypt: "Шифратор", nav_hasher: "Хешер", nav_archiver: "Архиватор", nav_text_analyzer: "Анализатор Текста",
-            nav_image_editor: "Редактор Изобр.", nav_image_converter: "Конвертер Изобр.", nav_audio_generator: "Аудио-Генерация", nav_video_player: "Видеоплеер", nav_bytebeat: "Bytebeat/Визуал",
-            nav_game_of_life: "Жизнь Конвея", nav_tetris: "Тетрис", nav_pong: "Понг", nav_2048: "2048", nav_sand_sim: "Песочница Частиц", nav_perceptron: "Перцептрон", nav_tictactoe: "Х/О", nav_snake: "Змейка (AI)",
-            nav_browser: "Браузер", nav_os_mockup: "OS Анимации", nav_notepad: "Мини-Блокнот", nav_timer: "Таймер/Секунд.", nav_converter: "Конвертер С/F", nav_currency_converter: "Конвертер Валют", nav_counter: "Счетчик Слов", nav_calculator: "Калькулятор", nav_window_system: "Оконная Система",
-            
-            pwg_title: "Генератор Паролей", pwg_length_label: "Длина:", pwg_upper: "Заглавные (A-Z)", pwg_lower: "Строчные (a-z)", pwg_numbers: "Цифры (0-9)", pwg_symbols: "Символы (!@#$%^)", pwg_generate_btn: "Сгенерировать", pwg_output_label: "Пароль:",
-            qr_title: "QR-код/штрих-код генератор", qr_input_placeholder: "Введите текст или URL",
-            notepad_title: "Мини-блокнот", notepad_placeholder: "Ваши заметки сохраняются локально...",
-            timer_title: "Таймер / Секундомер", timer_start_btn: "Старт", timer_stop_btn: "Стоп", timer_reset_btn: "Сброс", timer_set_label: "Установить Таймер (секунды):",
-            cur_title: "Конвертер валют", cur_note: "Офлайн: USD/EUR/RUB (фиксированные курсы).", cur_output_label: "Результат:",
-            uuid_title: "Генератор UUID/Никнеймов", uuid_nickname_btn: "Никнейм",
-            reg_title: "RegExp Тестер", reg_pattern_label: "Паттерн (/.../):", reg_text_label: "Тестовый текст:", reg_run_btn: "Проверить", reg_no_match: "Совпадений не найдено.", reg_match_count: "Найдено {count} совпадений", reg_error: "Ошибка паттерна", reg_index_label: "Индекс",
-            ide_title: "Мини-IDE (HTML/CSS/JS)", ide_run_btn: "Обновить Предпросмотр", ide_preview_title: "Предпросмотр:",
-            json_title: "JSON Форматтер/Валидатор", json_input_label: "JSON Ввод:", json_format_btn: "Форматировать/Валидировать", json_output_label: "Вывод (Formatted):", json_valid: "Валидный JSON. Отформатировано.", json_error: "Ошибка JSON",
-            base64_title: "Base64 Encode/Decode", base64_input_label: "Ввод (Текст/Base64):", base64_encode_btn: "Encode →", base64_decode_btn: "← Decode", base64_output_label: "Вывод:", base64_error: "Ошибка кодирования/декодирования.", base64_error_format: "Неверный Base64 формат.",
-            cipher_title: "Шифратор/Дешифратор", cipher_key_placeholder: "Ключ/Сдвиг", cipher_encrypt_btn: "Зашифровать",
-            hash_title: "Хешер", hash_placeholder: "Введите текст", hash_output_label: "Хеш:",
-            rand_title: "Генератор случайных значений", rand_number_btn: "Число", rand_color_btn: "Цвет",
-            img_editor_title: "Редактор изображений", img_editor_tools: "Обрезка, Масштаб", img_converter_title: "Конвертер изображений", img_converter_convert_btn: "Конвертировать",
-            aud_gen_title: "Аудио-Генерация (Sine/Square)", aud_gen_play_btn: "Play Tone", vid_player_title: "Видеоплеер",
-            gol_title: "Игра Жизнь Конвея", gol_start_btn: "Старт", gol_reset_btn: "Сброс", gol_random_btn: "Рандом",
-            tetris_title: "Тетрис", pong_title: "Понг", '2048_title': "Блоковый пазл (2048)", sand_sim_title: "Песочница частиц", perc_title: "Простая нейросеть-демонстрация (Перцептрон)", perc_note: "Обучение логике AND/OR", perc_train_btn: "Обучить",
-            os_mockup_title: "Проверка Динамических Анимаций (OS Mockup)", os_mockup_note: "Нажмите на иконку, чтобы открыть приложение. Тяните окно вниз от центра экрана, чтобы закрыть его жестом.",
-            browser_title: "Браузер-Заглушка + Симуляция Загрузок", browser_welcome_title: "Добро пожаловать в МультиБраузер!", browser_note: "Это заглушка. Вы можете симулировать скачивание файлов.", browser_simulate_btn: "Симулировать Загрузку Файла", browser_downloads_title: "Загрузки:",
-            window_system_title: "Казуальная оконная система", window_system_open_btn: "Открыть новое окно",
-            lab_title: "Генератор Лабиринтов", pal_title: "Генератор Палитр Цветов", pal_generate_btn: "Генерировать", frac_title: "Генератор Фракталов", frac_mandelbrot: "Мандельброт",
-            arch_title: "Сжимающий архиватор LZW/DEFLATE", arch_input_placeholder: "Введите текст для сжатия", arch_compress_btn: "Сжать →", text_anal_title: "Анализатор текста", text_anal_input_placeholder: "Введите текст для анализа", text_anal_analyze_btn: "Анализировать", text_anal_output_label: "Частотность слов: ...", pat_gen_title: "Генератор паттернов",
-            conv_title: "Конвертер °C в °F", conv_celsius_label: "Цельсий (°C):", conv_output_label: "Результат в Фаренгейтах",
-            counter_title: "Счетчик Слов и Символов", counter_placeholder: "Введите текст здесь...", counter_chars: "Символов:", counter_words: "Слов:",
-            ttt_mode_pvp: "Игрок vs Игрок", ttt_mode_pva: "Игрок vs AI", ttt_mode_ava: "AI vs AI", ttt_diff_hard: "Невозможная", ttt_diff_medium: "Средняя", ttt_diff_easy: "Легкая", ttt_current_turn: "Текущий ход:",
-            snake_difficulty_label: "Сложность AI (0-100):", snake_food_label: "Скин еды:", snake_seed_label: "Сид:", snake_start_btn: "Старт AI", snake_score_label: "Счет:", snake_deaths_label: "Смертей:", snake_ai_level_label: "AI Level:",
-            bytebeat_style_label: "Стиль визуализации:", bytebeat_style_bars: "Столбцы (Bars)", bytebeat_style_wave: "Волна (Waveform)", bytebeat_style_dots: "Точки (Dots)", bytebeat_style_mirror: "Зеркальные Столбцы", bytebeat_generator_title: "Генератор Bytebeat", bytebeat_formula_label: "Bytebeat Формула", bytebeat_generate_btn: "Сгенерировать Код", bytebeat_remix_btn: "Ремикс Кода", bytebeat_sample_rate_label: "Четкость Звука (Hz):", bytebeat_rate_high: "44100 Hz (Высокая)", bytebeat_rate_low: "8000 Hz (Низкая / Эффект Говна)", bytebeat_play_btn: "Играть Bytebeat", bytebeat_audio_file_title: "Визуализатор для Аудио Файла", bytebeat_audio_file_label: "Выберите MP3/WAV файл:", bytebeat_audio_play_btn: "Воспроизвести и Визуализировать", bytebeat_visualizer_note: "Визуализатор:",
-            alert_pw_empty: "Выберите хотя бы один тип символов!", alert_timer_done: "Время вышло!", alert_audio_decode_error: "Ошибка декодирования аудиофайла.", alert_audio_file_select: "Пожалуйста, выберите аудиофайл.", alert_game_over: "Игра окончена! Счет: {score}. Смертей: {deaths}. AI уровень: {level}.",
-        },
-        en: {
-            title: "Multitool | Version 0.8 Alpha", header_title: "Multitool | 0.8 Alpha 🚀",
-            cpu_label: "CPU:", ram_label: "RAM:", toggle_theme_btn: "💡 Toggle Theme",
-            
-            nav_password_gen: "Password Generator", nav_qr_generator: "QR/Barcode", nav_uuid_gen: "UUID/Nicknames", nav_random_gen: "Value Generator", nav_labyrinth: "Labyrinth Generator", nav_color_palette: "Palette Generator", nav_fractal_gen: "Fractal Generator", nav_pattern_gen: "Pattern Generator",
-            nav_mini_ide: "Mini-IDE", nav_json_formatter: "JSON Formatter", nav_regexp_tester: "RegExp Tester", nav_base64_converter: "Base64", nav_code_encrypt: "Cipher", nav_hasher: "Hasher", nav_archiver: "Archiver", nav_text_analyzer: "Text Analyzer",
-            nav_image_editor: "Image Editor", nav_image_converter: "Image Converter", nav_audio_generator: "Audio Generation", nav_video_player: "Video Player", nav_bytebeat: "Bytebeat/Visual",
-            nav_game_of_life: "Game of Life", nav_tetris: "Tetris", nav_pong: "Pong", nav_2048: "2048", nav_sand_sim: "Particle Sandbox", nav_perceptron: "Perceptron", nav_tictactoe: "Tic-Tac-Toe", nav_snake: "Snake (AI)",
-            nav_browser: "Browser", nav_os_mockup: "OS Animations", nav_notepad: "Mini-Notepad", nav_timer: "Timer/Stopwatch", nav_converter: "Converter C/F", nav_currency_converter: "Currency Converter", nav_counter: "Word Counter", nav_calculator: "Calculator", nav_window_system: "Window System",
-            
-            pwg_title: "Password Generator", pwg_length_label: "Length:", pwg_upper: "Uppercase (A-Z)", pwg_lower: "Lowercase (a-z)", pwg_numbers: "Numbers (0-9)", pwg_symbols: "Symbols (!@#$%^)", pwg_generate_btn: "Generate", pwg_output_label: "Password:",
-            qr_title: "QR/Barcode Generator", qr_input_placeholder: "Enter text or URL",
-            notepad_title: "Mini-Notepad", notepad_placeholder: "Your notes are saved locally...",
-            timer_title: "Timer / Stopwatch", timer_start_btn: "Start", timer_stop_btn: "Stop", timer_reset_btn: "Reset", timer_set_label: "Set Timer (seconds):",
-            cur_title: "Currency Converter", cur_note: "Offline: USD/EUR/RUB (fixed rates).", cur_output_label: "Result:",
-            uuid_title: "UUID/Nickname Generator", uuid_nickname_btn: "Nickname",
-            reg_title: "RegExp Tester", reg_pattern_label: "Pattern (/.../):", reg_text_label: "Test Text:", reg_run_btn: "Check", reg_no_match: "No matches found.", reg_match_count: "Found {count} matches", reg_error: "Pattern Error", reg_index_label: "Index",
+    activeAppIcon = iconEl;
+    const appId = iconEl.dataset.app;
+
+    // 2. Генерация контента
+    if (appId === 'settings') {
+        appContent.innerHTML = tplSettings.innerHTML;
+        homeBar.classList.add('dark');
+        appWindow.style.background = '#f2f2f7';
+    } else {
+        appContent.innerHTML = tplGeneric.innerHTML;
+        appContent.querySelector('h1').innerText = iconEl.querySelector('.app-name').innerText;
+        homeBar.classList.remove('dark');
+        appWindow.style.background = '#fff';
+    }
+
+    // 3. Вычисляем координаты иконки
+    const iconRect = iconEl.querySelector('.app-icon').getBoundingClientRect();
+    const screenRect = screen.getBoundingClientRect();
+
+    const startTop = iconRect.top - screenRect.top;
+    const startLeft = iconRect.left - screenRect.left;
+    const startWidth = iconRect.width;
+    const startHeight = iconRect.height;
+
+    // 4. Если приложение было полностью закрыто (display:none), ставим его на иконку
+    // Если мы "спамим" (оно еще закрывается), мы просто разворачиваем его с текущего места
+    if (appWindow.style.display === 'none' || appWindow.style.display === '') {
+        appWindow.style.display = 'block';
+        appWindow.classList.remove('animatable'); // Отключаем плавность для телепортации
+        
+        appWindow.style.top = `${startTop}px`;
+        appWindow.style.left = `${startLeft}px`;
+        appWindow.style.width = `${startWidth}px`;
+        appWindow.style.height = `${startHeight}px`;
+        appWindow.style.borderRadius = '13px';
+        
+        // Force Reflow (браузер должен понять, где мы стоим)
+        void appWindow.offsetWidth;
+    }
+
+    // 5. Задаем финальные координаты (Весь экран) и включаем анимацию
+    appWindow.classList.add('animatable'); // Включаем transition
+    
+    appWindow.style.top = '0px';
+    appWindow.style.left = '0px';
+    appWindow.style.width = '100%';
+    appWindow.style.height = '100%';
+    appWindow.style.borderRadius = '38px';
+    
+    // Эффекты
+    appWindow.classList.add('open'); // Показать контент
+    homeScreen.style.transform = 'scale(0.85)';
+    homeScreen.style.opacity = '0';
+    
+    isAppOpen = true;
+}
+
+function closeApp() {
+    if (!activeAppIcon) return;
+    
+    // Отменяем таймер очистки, если он вдруг был
+    if (cleanupTimer) clearTimeout(cleanupTimer);
+
+    // 1. Координаты иконки (куда возвращаться)
+    const iconRect = activeAppIcon.querySelector('.app-icon').getBoundingClientRect();
+    const screenRect = screen.getBoundingClientRect();
+    
+    const targetTop = iconRect.top - screenRect.top;
+    const targetLeft = iconRect.left - screenRect.left;
+
+    // 2. Скрываем контент сразу
+    appWindow.classList.remove('open');
+    homeBar.classList.remove('dark');
+
+    // 3. Летим обратно
+    appWindow.classList.add('animatable');
+    
+    // Важно: Сбрасываем трансформации от жестов (если они были)
+    appWindow.style.transform = 'translate(0, 0) scale(1)'; 
+    
+    appWindow.style.top = `${targetTop}px`;
+    appWindow.style.left = `${targetLeft}px`;
+    appWindow.style.width = `${iconRect.width}px`;
+    appWindow.style.height = `${iconRect.height}px`;
+    appWindow.style.borderRadius = '13px';
+
+    // 4. Возвращаем рабочий стол
+    homeScreen.style.transform = 'scale(1)';
+    homeScreen.style.opacity = '1';
+
+    isAppOpen = false;
+
+    // 5. Реальное скрытие элемента после завершения анимации
+    cleanupTimer = setTimeout(() => {
+        if (!isAppOpen) { // Проверка, вдруг успели открыть снова
+            appWindow.style.display = 'none';
+        }
+    }, 500); // Время совпадает с transition в CSS
+}
+
+/* --- ЖЕСТЫ (SWIPE UP TO HOME) --- */
+let startY = 0;
+let currentY = 0;
+let isDragging = false;
+
+// Поддержка и мыши, и тачскрина
+homeBarArea.addEventListener('mousedown', startDrag);
+homeBarArea.addEventListener('touchstart', startDrag, {passive: false});
+
+document.addEventListener('mousemove', drag);
+document.addEventListener('touchmove', drag, {passive: false});
+
+document.addEventListener('mouseup', endDrag);
+document.addEventListener('touchend', endDrag);
+
+function startDrag(e) {
+    if (!isAppOpen) return;
+    isDragging = true;
+    startY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY;
+    
+    // Отключаем плавную анимацию CSS во время перетаскивания руками
+    // чтобы окно следовало за пальцем без задержек
+    appWindow.classList.remove('animatable');
+    appWindow.style.transition = 'none'; 
+}
+
+function drag(e) {
+    if (!isDragging || !isAppOpen) return;
+    e.preventDefault(); // Чтобы не скроллить страницу
+
+    currentY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY;
+    const deltaY = currentY - startY;
+
+    // Мы разрешаем тянуть только вверх (отрицательный deltaY)
+    if (deltaY < 0) {
+        // Математика для масштабирования окна
+        // Чем выше тянем, тем меньше становится окно
+        const progress = Math.min(Math.abs(deltaY) / 300, 1); // 0 to 1
+        const scale = 1 - (progress * 0.4); // Мин масштаб 0.6
+        const radius = 38 + (progress * 20); // Скругление увеличивается
+        
+        appWindow.style.transform = `translateY(${deltaY}px) scale(${scale})`;
+        appWindow.style.borderRadius = `${radius}px`;
+    }
+}
+
+function endDrag(e) {
+    if (!isDragging) return;
+    isDragging = false;
+
+    // Возвращаем плавность CSS для завершения действия
+    appWindow.classList.add('animatable');
+    appWindow.style.transition = 'all 0.4s cubic-bezier(0.19, 1, 0.22, 1)';
+
+    const deltaY = currentY - startY;
+
+    // Порог срабатывания: если протащили больше 100px вверх -> закрываем
+    if (deltaY < -100) {
+        closeApp();
+    } else {
+        // Если мало протащили -> пружиним обратно (открываемся)
+        appWindow.style.transform = 'translate(0, 0) scale(1)';
+        appWindow.style.borderRadius = '38px';
+    }
+}text_label: "Test Text:", reg_run_btn: "Check", reg_no_match: "No matches found.", reg_match_count: "Found {count} matches", reg_error: "Pattern Error", reg_index_label: "Index",
             ide_title: "Mini-IDE (HTML/CSS/JS)", ide_run_btn: "Update Preview", ide_preview_title: "Preview:",
             json_title: "JSON Formatter/Validator", json_input_label: "JSON Input:", json_format_btn: "Format/Validate", json_output_label: "Output (Formatted):", json_valid: "Valid JSON. Formatted.", json_error: "JSON Error",
             base64_title: "Base64 Encode/Decode", base64_input_label: "Input (Text/Base64):", base64_encode_btn: "Encode →", base64_decode_btn: "← Decode", base64_output_label: "Output:", base64_error: "Encoding/Decoding error.", base64_error_format: "Invalid Base64 format.",
